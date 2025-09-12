@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CS 180 Project 1</title>
+    <style>
+        body {
+            font-family: Georgia, sans-serif;
+            margin: 20px;
+            text-align: center;
+            background: radial-gradient(circle,rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+        }
+
+        h1 {
+            margin-bottom: 60px;
+            margin-top: 60px;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            margin-top: 0px;
+        }
+
+        .info {
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;
+            border-radius: 8px;
+            text-align: left;
+            background: #e6e0f5;
+            padding: 50px;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .container img {
+            height: 300px;
+            width: auto;
+            margin: 15px auto;
+        }
+
+        hr {
+            margin-top: 40px;
+            margin-bottom: 40px; 
+        }
+
+        .caption {
+            font-size: 15px;
+            margin-top: 5px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 15%;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Project #1: Images of the Russian Empire</h1>
+    <h2>Colorizing the Produkin-Gorskii Photo Collection</h2>
+
+    <div class="info">
+
+        <h2>Project Overview</h2>
+        <div class="row">
+            <p>ADD PROJECT OVERVIEW</p>
+        </div>
+        <hr />
+
+        <h2>Part 1: Single-Scale Alignment</h2>
+        <div class="row">
+            <p>ADD THOROUGH EXPLANATION / APPROACH / GOOD PRESENTATION</p>
+
+            <div class="container">
+                <img src="./media/cathedral_aligned.jpg" alt="Aligned cathedral jpg">
+                <div class="caption">Cathedral</div>
+                <div class="caption">B to G displacement: (-2, -5)</div>
+                <div class="caption">R to G displacement: (1, 7)</div>
+            </div>
+            <div class="container">
+                <img src="./media/monastery_aligned.jpg" alt="Aligned monastery jpg">
+                <div class="caption">Monastery</div>
+                <div class="caption">B to G displacement: (-2, 3)</div>
+                <div class="caption">R to G displacement: (1, 6)</div>
+            </div>
+            <div class="container">
+                <img src="./media/tobolsk_aligned.jpg" alt="Aligned tobolsk jpg">
+                <div class="caption">Tobolsk</div>
+                <div class="caption">B to G displacement: (-3, -3)</div>
+                <div class="caption">R to G displacement: (1, 4)</div>
+            </div>
+        </div>
+        <hr />
+
+        <h2>Part 2: Multi-Scale Pyramid Alignment (with NCC)</h2>
+        <div class="row">
+            <p>ADD THOROUGH EXPLANATION / APPROACH / GOOD PRESENTATION</p>
+
+            <div class="container">
+                <img src="./media/church_aligned.jpg" alt="Aligned church jpg">
+                <div class="caption">Church</div>
+                <div class="caption">B to G displacement: (-4, -25)</div>
+                <div class="caption">R to G displacement: (-8, 33)</div>
+            </div>
+            <div class="container">
+                <img src="./media/emir_aligned.jpg" alt="Aligned emir jpg">
+                <div class="caption">Emir</div>
+                <div class="caption">B to G displacement: (-24, -49)</div>
+                <div class="caption">R to G displacement: (17, 57)</div>
+            </div>
+            <div class="container">
+                <img src="./media/harvesters_aligned.jpg" alt="Aligned harvesters jpg">
+                <div class="caption">Harvesters</div>
+                <div class="caption">B to G displacement: (-16, -59)</div>
+                <div class="caption">R to G displacement: (-3, 65)</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/icon_aligned.jpg" alt="Aligned icon jpg">
+                <div class="caption">Icon</div>
+                <div class="caption">B to G displacement: (-17, -41)</div>
+                <div class="caption">R to G displacement: (5, 48)</div>
+            </div>
+            <div class="container">
+                <img src="./media/italil_aligned.jpg" alt="Aligned italil jpg">
+                <div class="caption">Italil</div>
+                <div class="caption">B to G displacement: (-21, -38)</div>
+                <div class="caption">R to G displacement: (15, 38)</div>
+            </div>
+            <div class="container">
+                <img src="./media/lastochikino_aligned.jpg" alt="Aligned lastochikino jpg">
+                <div class="caption">Lastochikino</div>
+                <div class="caption">B to G displacement: (2, 2)</div>
+                <div class="caption">R to G displacement: (-7, 78)</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/lugano_aligned.jpg" alt="Aligned lugano jpg">
+                <div class="caption">Lugano</div>
+                <div class="caption">B to G displacement: (16, -41)</div>
+                <div class="caption">R to G displacement: (-13, 52)</div>
+            </div>
+            <div class="container">
+                <img src="./media/melons_aligned.jpg" alt="Aligned melons jpg">
+                <div class="caption">Melons</div>
+                <div class="caption">B to G displacement: (-10, -81)</div>
+                <div class="caption">R to G displacement: (3, 96)</div>
+            </div>
+            <div class="container">
+                <img src="./media/self_portrait_aligned.jpg" alt="Aligned self portrait jpg">
+                <div class="caption">Self Portrait</div>
+                <div class="caption">B to G displacement: (-29, -78)</div>
+                <div class="caption">R to G displacement: (8, 98)</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/siren_aligned.jpg" alt="Aligned siren jpg">
+                <div class="caption">Siren</div>
+                <div class="caption">B to G displacement: (6, -49)</div>
+                <div class="caption">R to G displacement: (-18, 47)</div>
+            </div>
+            <div class="container">
+                <img src="./media/three_generations_aligned.jpg" alt="Aligned three generations jpg">
+                <div class="caption">Three Generations</div>
+                <div class="caption">B to G displacement: (-14, -53)</div>
+                <div class="caption">R to G displacement: (-3, 58)</div>
+            </div>
+            <div class="container">
+                <img src="./media/mosque_aligned.jpg" alt="Aligned mosque jpg">
+                <div class="caption">Additional: Mosque</div>
+                <div class="caption">B to G displacement: (-10, -26)</div>
+                <div class="caption">R to G displacement: (1, 44)</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/railroad_depot_aligned.jpg" alt="Aligned railroad depot jpg">
+                <div class="caption">Additional: Railroad Depot</div>
+                <div class="caption">B to G displacement: (7, -36)</div>
+                <div class="caption">R to G displacement: (-10, 87)</div>
+            </div>
+            <div class="container">
+                <img src="./media/pamiatnik_aligned.jpg" alt="Aligned pamiatnik jpg">
+                <div class="caption">Additional: Pamiatnik</div>
+                <div class="caption">B to G displacement: (-27, -14)</div>
+                <div class="caption">R to G displacement: (24, 71)</div>
+            </div>
+            <div class="container">
+                <img src="./media/stonegate_aligned.jpg" alt="Aligned stonegate jpg">
+                <div class="caption">Additional: Stonegate</div>
+                <div class="caption">B to G displacement: (-3, -34)</div>
+                <div class="caption">R to G displacement: (1, 64)</div>
+            </div>
+        </div>
+        
+    </div>
+
+</body>
+</html>
