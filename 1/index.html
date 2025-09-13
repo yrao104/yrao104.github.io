@@ -35,8 +35,8 @@
         }
 
         .container img {
-            height: 250px;
-            width: auto;
+            height: auto;
+            width: 100%;
             margin-top: 70px;
             margin-bottom: 0px;
         }
@@ -66,11 +66,25 @@
     <div class="info">
 
         <h2>Project Overview</h2>
-        <p style="text-align: left;">ADD PROJECT OVERVIEW</p>
+        <p style="text-align: left;">
+            This project builds off of Sergei Prokudin-Gorskii's idea of capturing different red, green, and blue filters of scenes onto glass plates and then combining them into a color image. 
+            This can be done by splitting each image into the RGB color channels, combining them directly on top, and lastly aligning all three channels into a single color image. 
+            Given digitized images with all three glass plates, I created an algorithm utilizing translation methods to align these glass plates and reconstruct the colored images. 
+            I began with a single-scale alignment approach on smaller jpg images and then improved my algorithm to a multi-scale image pyramid in order to efficiently handle larger tif files.
+        </p>
         <hr />
 
         <h2>Part 1: Single-Scale Alignment</h2>
-        <p style="text-align: left; margin-bottom: -40px;">ADD THOROUGH EXPLANATION / APPROACH / GOOD PRESENTATION</p>
+        <p style="text-align: left; margin-bottom: -40px;">
+            I approached single-scale alignment using a translation displacement method with a displacement range of -25 to 25. 
+            For aligning each color channel to the base color channel, I first looped through nested for loops over the x and y displacements. 
+            By utilizing the np.roll function, I was able to translate the image channel by the (x, y) displacement. 
+            Then, I utilized the normalized cross-correlation to calculate the dot product between the normalized image vectors.
+            Lastly, I found the lowest dot product to identify the best displacement to align the color channels.
+            I initially implemented this algorithm with the L2 norm and then switched to NCC, which had similar performance.
+            In addition, I ended up cropping the images by 10% when comparing alignments since borders often result in bad alignment.
+            I also made sure to crop the final image by 5% to reproduce the colored image as best as possible.
+        </p>
 
         <div class="row">
             <div class="container">
@@ -95,7 +109,20 @@
         <hr />
 
         <h2>Part 2: Multi-Scale Pyramid Alignment (with NCC)</h2>
-        <p style="text-align: left; margin-bottom: -40px;">ADD THOROUGH EXPLANATION / APPROACH / GOOD PRESENTATION</p>
+        <p style="text-align: left; margin-bottom: -40px;">
+            For the multi-scale pyramid alignment portion, I built on top of my single-scale alignment approach.
+            I began with a displacement range from -25 to 25 and implemented recursive calls to the single-scale alignment method. 
+            Next, I added a base case to stop recursion when the images reached a size smaller than 200 x 200 pixels.
+
+            At each image pyramid level (other than the base case), I halved the displacement range and downsampled the images by resizing them in half.
+            I recursively called the overall function with the best (x, y) displacement from the previous level divided by two, then updated this displacement by a factor of 2 before passing it into the single-scale alignment method.
+            
+            I initially implemented this algorithm with the L2 norm, but the alignment was pretty bad, so I switched to NCC, which drastically improved the performance.
+            To speed up my algorithm, I made sure to crop the outer 10% of each color channel before alignment and calculated as much of the normalized image vectors outside the nested for loops as possible.
+            
+            Even after these changes, a few of my images (specifically emir.tif, melons.tif, and self_portrait.tif) were still slightly misaligned and the red color channel was noticeably misaligned.
+            By aligning to the green channel instead of the blue channel, the alignment for larger .tif files improved significantly.    
+        </p>
 
         <div class="row">
             <div class="container">
