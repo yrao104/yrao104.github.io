@@ -57,6 +57,11 @@
             gap: 5%;
         }
 
+        p {
+            margin-right: 15px;
+            margin-left: 15px;
+        }
+
     </style>
 </head>
 <body>
@@ -81,6 +86,7 @@
             By utilizing the np.roll function, I was able to translate the image channel by the (x, y) displacement. 
             Then, I utilized the normalized cross-correlation to calculate the dot product between the normalized image vectors.
             Lastly, I found the lowest dot product to identify the best displacement to align the color channels.
+            <br><br>
             I initially implemented this algorithm with the L2 norm and then switched to NCC, which had similar performance.
             In addition, I ended up cropping the images by 10% when comparing alignments since borders often result in bad alignment.
             I also made sure to crop the final image by 5% to reproduce the colored image as best as possible.
@@ -113,13 +119,11 @@
             For the multi-scale pyramid alignment portion, I built on top of my single-scale alignment approach.
             I began with a displacement range from -25 to 25 and implemented recursive calls to the single-scale alignment method. 
             Next, I added a base case to stop recursion when the images reached a size smaller than 200 x 200 pixels.
-
             At each image pyramid level (other than the base case), I halved the displacement range and downsampled the images by resizing them in half.
             I recursively called the overall function with the best (x, y) displacement from the previous level divided by two, then updated this displacement by a factor of 2 before passing it into the single-scale alignment method.
-            
+            <br><br>
             I initially implemented this algorithm with the L2 norm, but the alignment was pretty bad, so I switched to NCC, which drastically improved the performance.
             To speed up my algorithm, I made sure to crop the outer 10% of each color channel before alignment and calculated as much of the normalized image vectors outside the nested for loops as possible.
-            
             Even after these changes, a few of my images (specifically emir.tif, melons.tif, and self_portrait.tif) were still slightly misaligned and the red color channel was noticeably misaligned.
             By aligning to the green channel instead of the blue channel, the alignment for larger .tif files improved significantly.    
         </p>
