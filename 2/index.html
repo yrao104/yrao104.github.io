@@ -35,10 +35,8 @@
         }
 
         .container img {
-            height: 50%;
+            height: 400px;
             width: auto;
-            margin-top: 70px;
-            margin-bottom: 0px;
         }
 
         hr {
@@ -54,7 +52,9 @@
         .row {
             display: flex;
             justify-content: center;
-            gap: 5%;
+            gap: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         p {
@@ -121,29 +121,59 @@
             </div>
         </div>
 
+        <p style="text-align: left;">
+            The convolved image with the 9x9 box filter smooths out the image by effecitvely blurring it. 
+            The convolved image with Dx emphasizes the vertical edges in the image. We can see that it emphasizes my hair as well as the outline of my sweater.
+            The convolved image with Dy emphasizes the horizontal edges in the image. We can see that it emphasizes my smile, eyebrows, and eyes.
+        </p>
+
         <hr />
 
         <h2>Part 1.2: Finite Difference Operator</h2>
 
+        <p style="text-align: left;">
+            In this part, I computed the convolutions of the camera man image using Dx and Dy. 
+            Then, I utilized the results to generate a gradient magnitude image. 
+            Lastly, using a threshold, I binarized the gradient magnitude image, resulting in a binarized edge image.
+        </p>
+
         <div class="row">
             <div class="container">
-                <img src="./media/yamunadx.png" alt="Aligned cathedral jpg">
-                <div class="caption" style="font-weight: bold;">Convolved Image with Dx</div>
+                <img src="./media/camdx.png">
+                <div class="caption" style="font-weight: bold;">Partial Derivative in X</div>
             </div>
             <div class="container">
-                <img src="./media/yamunady.png" alt="Aligned monastery jpg">
-                <div class="caption" style="font-weight: bold;">Convolved Image with Dy</div>
+                <img src="./media/camdy.png">
+                <div class="caption" style="font-weight: bold;">Partial Derivative in Y</div>
             </div>
             <div class="container">
-                <img src="./media/yamunadx.png" alt="Aligned cathedral jpg">
-                <div class="caption" style="font-weight: bold;">Convolved Image with Dx</div>
+                <img src="./media/camgradmag.png">
+                <div class="caption" style="font-weight: bold;">Gradient Magnitude Image</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/bin0.1.png">
+                <div class="caption" style="font-weight: bold;">Binarized Edge Image - 0.1 Threshold</div>
+            </div>
+            <div class="container">
+                <img src="./media/bin0.2.png">
+                <div class="caption" style="font-weight: bold;">Binarized Edge Image - 0.2 Threshold (Best Image)</div>
+            </div>
+            <div class="container">
+                <img src="./media/bin0.3.png">
+                <div class="caption" style="font-weight: bold;">Binarized Edge Image - 0.3 Threshold</div>
             </div>
         </div>
 
         <p style="text-align: left;">
-            Information...
-            <br><br>
-            Information... 
+            <strong>Tradeoffs Between Edges and Noise Removal (Threshold Values)</strong>
+            <br>
+            The binarized edge image with a threshold of 0.1 includes too much noise near the ground level of the image.
+            On the other hand, the binarized edge image with a threshold of 0.2 reduces this noise while still preserving the main edges of the image.
+            Lastly, the binarized edge image with a threshold of 0.3 includes no noise but removes some critical edges of the image.
+            As a result, the binarized edge image with a threshold of 0.2 seems to be the best image for this task.
         </p>
 
         <hr />
@@ -196,6 +226,8 @@
         </p>
 
     </div>
+
+    tell us about the most important thing you learned from this project
 
 </body>
 </html>
