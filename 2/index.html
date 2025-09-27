@@ -72,32 +72,55 @@
     <div class="info">
 
         <h2>Part 1.1: Convolutions From Scratch</h2>
+        <div class="row">
+            <div class="container">
+                <img src="./media/conv4.png">
+                <div class="caption" style="font-weight: bold;">Convolution - 4 For Loops</div>
+                <div class="caption">Runtime: 111.37 seconds</div>
+            </div>
+            <div class="container">
+                <img src="./media/conv2.png">
+                <div class="caption" style="font-weight: bold;">Convolution - 2 For Loops</div>
+                <div class="caption">Runtime: 9.91 seconds</div>
+            </div>
+        </div>
+
         <p style="text-align: left;">
-            Information...
+            <strong>Runtime Analysis</strong>
+            <br>
+            The runtime of the convolution implementation with 2 loops was faster than the convolution implementation with 4 loops by about a factor of 11.
+            This makes sense given the fact that the 2 loop implemention utilizes numpy to vectorize the inner 2 loops that are present in the 4 loop implementation.
+            As expected, scipy.signal.convolve2d had the fastest runtime of about 0.42 seconds, since it is more optimized than either of the loop implementations I wrote.
             <br><br>
-            Information...
+            <strong>Boundary Handling</strong>
+            <br>
+            I handled boundaries for the 2 and 4 loop implementations by padding the image by half the kernel dimensions on all sides to ensure that the box filter is appropriately aligned in all portions of the image and the image output is the same size as the input size.
+            For the scipy.signal.convolve2d implementation, I handled boundaries by include the mode="same" parameter to similarly have zero padding.
+
         </p>
 
-        <!-- <div class="row">
+         <div class="row">
             <div class="container">
-                <img src="./media/cathedral_aligned.jpg" alt="Aligned cathedral jpg">
-                <div class="caption" style="font-weight: bold;">Cathedral</div>
-                <div class="caption">B to G displacement: (-2, -5)</div>
-                <div class="caption">R to G displacement: (1, 7)</div>
+                <img src="./media/yamuna.png">
+                <div class="caption" style="font-weight: bold;">Original Image</div>
             </div>
             <div class="container">
-                <img src="./media/monastery_aligned.jpg" alt="Aligned monastery jpg">
-                <div class="caption" style="font-weight: bold;">Monastery</div>
-                <div class="caption">B to G displacement: (-2, 3)</div>
-                <div class="caption">R to G displacement: (1, 6)</div>
+                <img src="./media/yamunabox.png">
+                <div class="caption" style="font-weight: bold;">Convolved Image with 9x9 Box Filter</div>
+            </div>
+        </div>
+
+         <div class="row">
+            <div class="container">
+                <img src="./media/yamunadx.png" alt="Aligned cathedral jpg">
+                <div class="caption" style="font-weight: bold;">Convolved Image with Dx</div>
             </div>
             <div class="container">
-                <img src="./media/tobolsk_aligned.jpg" alt="Aligned tobolsk jpg">
-                <div class="caption" style="font-weight: bold;">Tobolsk</div>
-                <div class="caption">B to G displacement: (-3, -3)</div>
-                <div class="caption">R to G displacement: (1, 4)</div>
+                <img src="./media/yamunady.png" alt="Aligned monastery jpg">
+                <div class="caption" style="font-weight: bold;">Convolved Image with Dy</div>
             </div>
-        </div> -->
+        </div>
+
         <hr />
 
         <h2>Part 1.2: Finite Difference Operator</h2>
