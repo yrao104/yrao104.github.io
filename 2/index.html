@@ -518,8 +518,9 @@
             </div>
         </div>
 
+        <p style="text-align: center; font-weight: bold; margin-top: 40px;">Laplacian Pyramid Blending Figure (Figure 3.42)</p>
+        <br>
         <div class="row">
-            <p style="text-align: center; font-weight: bold; margin-top: 40px;">Laplacian Pyramid Blending Figure (Figure 3.42)</p>
             <div class="stack-image-container">
                 <img src="./media/lappyr0.png">
             </div>
@@ -543,15 +544,59 @@
         <hr />
 
          <h2>Part 2.4: Multiresolution Blending (a.k.a. the Oraple)</h2>
-        <p style="text-align: left;">
-            Information...
-            <br><br>
-            Information... 
+
+         <p style="text-align: left;">
+            In this part, I similary created Gaussian and Laplacian stacks for all my images, and I created a Laplacian pyramid blending figure with the resulting yoda pointing to a star portal image.
+            I created the Guassian and Laplacian stacks as described above in the 2.3 section.
+
+            Specifically for the yoda pointing to star portal image, I used an irregular circular mask to depict the portal. For this, I had to pad the circular mask image with zeros to match the overall yoda image size. 
+            I also rescaled the circle to be smaller for the portal to make it seem as though yoda was pointing at it.
+            To create the Laplacian pyramid blending figure, I iterated through all levels of both the baby yoda and stars Laplacian stacks.
+            In each iteration, I used image blending with a mask to get the current level's blended image. I utilized the formula I = m * I_stars + (1-m) * I_yoda, where m is the mask, in order to do this.
+            Then I displayed these blended images as well as the masked yoda and stars images for levels 0, 2, and 4.
+            In the final row, I displayed the final blended yoda pointing at star portal image as well as the final layer masked yoda and stars images.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/ogyoda.png">
+                <div class="caption">Original Baby Yoda Image</div>
+            </div>
+            <div class="container">
+                <img src="./media/ogstars.png">
+                <div class="caption">Original Stars Image</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/circularmask.png">
+                <div class="caption">Circular Mask</div>
+            </div>
+            <div class="container">
+                <img src="./media/yodastars.png">
+                <div class="caption">Baby Yoda Pointing to Star Portal (Final Image)</div>
+            </div>
+        </div>
+
+        <p style="text-align: center; font-weight: bold; margin-top: 40px;">Laplacian Pyramid Blending Figure</p>
+        <br>
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/lapblendfig.png">
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Conclusion</h2>
+
+         <p style="text-align: left;">
+            The most important thing I learned from this project was how intricate the process of image blending and image editing truly is.
+            Overall, the process seems so much simpler when utilizing user interfaces to automatically generate these images for you, but the mathematical equations behind these edits are so complex.
+            This project has made me appreciate these tools and libraries that efficiently optimize this process so much more, and I am now eager to understand the inner workings of additional imaging techniques. 
         </p>
 
     </div>
-
-    tell us about the most important thing you learned from this project
-
 </body>
 </html>
