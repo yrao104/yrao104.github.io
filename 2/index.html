@@ -190,10 +190,82 @@
         <hr />
 
         <h2>Part 1.3: Derivative of Gaussian (DoG) Filter</h2>
+
         <p style="text-align: left;">
-            Information...
-            <br><br>
-            Information... 
+            In this part, I reduced the noise present in the previous edge image. 
+            First, I created a 2D Gaussian filter that I used to convolve the original cameraman image with.
+            Then, I used Dx and Dy to get the partial derivatives with the Gaussian filter.
+            Utilizing this, I calculated the gradient magnitude and binarized gradient magnitude images similar to the process in the last part.
+            Next, I convolved the Guassian with Dx and Dy to calculate the derivatives of the Gaussian filter in X and Y.
+            Lastly, I used these DoG X and Y filters to convolve the cameraman image.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/gauss.png">
+                <div class="caption">Gaussian Filter</div>
+            </div>
+            <div class="container">
+                <img src="./media/blurgauss.png">
+                <div class="caption">Blurred Image with Gaussian Filter</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/dxgauss.png">
+                <div class="caption">Partial Derivative X with Gaussian</div>
+            </div>
+            <div class="container">
+                <img src="./media/dygauss.png">
+                <div class="caption">Partial Derivative Y with Gaussian</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/gradmaggauss.png">
+                <div class="caption">Gradient Magnitude Image with Gaussian</div>
+            </div>
+            <div class="container">
+                <img src="./media/bingauss.png">
+                <div class="caption">Binarized Edge Image with Gaussian</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            <strong>Comparison to Finite Difference Method</strong>
+            <br>
+            As we can see, the binarized edge image using the Gaussian filter has significantly less noise than the previous binarized edge image with the filter.
+            In addition, the finite difference method includes much sharper, thinner edges since there is no smoothing involved, whereas the Gaussian filter results in much thicker edges.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/dogx.png">
+                <div class="caption">DoG X Filter</div>
+            </div>
+            <div class="container">
+                <img src="./media/dogy.png">
+                <div class="caption">DoG Y Filter</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="container">
+                <img src="./media/dxdog.png">
+                <div class="caption">Partial Derivative X with DoG</div>
+            </div>
+            <div class="container">
+                <img src="./media/dydog.png">
+                <div class="caption">Partial Derivative Y with DoG</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            <strong>Comparison to Finite Difference Method</strong>
+            <br>
+            Similar to the previous example, the finite difference method had thinner, less pronounced edges for the derivative images. 
+            On the other hand, the edges ar emuch more pronounced and thicker for the derivative images using the DoG filter.
         </p>
   
     </div>
@@ -204,8 +276,8 @@
 
         <h2>Part 2.1: Image "Sharpening"</h2>
         <p style="text-align: left;">
-            Information...
-            <br><br>
+            <strong>Differences with Finite Difference Method</strong>
+            <br>
             Information...
         </p>
 
