@@ -471,41 +471,55 @@
 
         <p style="text-align: left;">
             In this part, I created Gaussian and Laplacian stacks for the orange and apple images, and I created a Laplacian pyramid blending figure with the resulting oraple.
-            I created the Gaussian stacks by 
+            I created the Gaussian stacks by iteratively applying a Gaussian filter again and again to each level.
+            For the Laplacian stacks, I subtracted the current and subsequent levels of the Gaussian stack to generate each level. For the last level, I used the last level of the Gaussian stack.
+            To create the Laplacian pyramid blending figure, I iterated through all levels of both the orange and apple Laplacian stacks.
+            In each iteration, I used image blending with a mask to get the current level's oraple image. I utilized the formula I = m * I_apple + (1-m) * I_orange, where m is the mask, in order to do this.
+            Then I displayed these blended images as well as the masked orange and apple images for levels 0, 2, and 4.
+            In the final row, I displayed the final blended oraple as well as the final layer masked orange and apple images.
         </p>
 
-        <div>
+        <div class="row">
             <div class="container">
-                <img src="./media/fftlowdog.png">
+                <img src="./media/orangegauss.png">
                 <div class="caption">Orange Gaussian Stack</div>
             </div>
         </div>
 
-        <div>
+        <div class="row">
             <div class="container">
-                <img src="./media/fftlowdog.png">
+                <img src="./media/orangelap.png">
                 <div class="caption">Orange Laplacian Stack</div>
             </div>
         </div>
 
-        <div>
+        <div class="row">
             <div class="container">
-                <img src="./media/fftlowdog.png">
+                <img src="./media/applegauss.png">
                 <div class="caption">Apple Gaussian Stack</div>
             </div>
         </div>
 
-        <div>
+        <div class="row">
             <div class="container">
-                <img src="./media/fftlowdog.png">
+                <img src="./media/applelap.png">
                 <div class="caption">Apple Laplacian Stack</div>
             </div>
         </div>
 
-        <div>
+        <div class="row">
+            <p>Laplacian Pyramid Blending Figure (Figure 3.42)</p>
             <div class="container">
-                <img src="./media/fftlowdog.png">
-                <div class="caption">Laplacian Pyramid Blending Figure (Figure 3.42)</div>
+                <img src="./media/lappyr0.png">
+            </div>
+            <div class="container">
+                <img src="./media/lappyr2.png">
+            </div>
+            <div class="container">
+                <img src="./media/lappyr4.png">
+            </div>
+            <div class="container">
+                <img src="./media/lappyrfinal.png">
             </div>
         </div>
 
