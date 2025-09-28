@@ -272,16 +272,86 @@
   
     </div>
 
+
+
     <h2 style="margin-bottom: 50px; margin-top: 50px">Part 2: Fun with Frequencies</h2>
 
     <div class="info">
 
         <h2>Part 2.1: Image "Sharpening"</h2>
+
         <p style="text-align: left;">
-            <strong>Differences with Finite Difference Method</strong>
-            <br>
-            Information...
+            In this part, I used an unsharp mask filter to "sharpen" images. 
+            I first used a low pass filter to retrieve the low frequencies. 
+            Then, I subtracted this from the original image to get the high frequencies and then multiplied these high frequencies by a constant to add to the original image to "sharpen" it.
         </p>
+
+        <p style="text-align: left;">
+            <strong>Unsharp Mask Filter Explanation</strong>
+            <br>
+            First, the unsharp mask filter blurs the original image using a 2D Gaussian filter to retrieve the low frequencies of the image. 
+            Next, it computes the high frequencies of the image by subtracting the low frequencies from the original image.
+            Lastly, it multiplies the high frequencies by a constant, alpha, and adds this to the original image in order to create the "sharpened" image, which is the final result.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/taj.png">
+                <div class="caption">Original Taj</div>
+            </div>
+            <div class="container">
+                <img src="./media/blurtaj.png">
+                <div class="caption">Blurred Taj</div>
+            </div>
+            <div class="container">
+                <img src="./media/highfreqtaj.png">
+                <div class="caption">High Frequency Taj</div>
+            </div>
+        </div>
+
+         <div class="row">
+            <div class="container">
+                <img src="./media/sharptaj0.5.png">
+                <div class="caption">Sharpened Taj (Alpha = 0.5)</div>
+            </div>
+            <div class="container">
+                <img src="./media/sharptaj1.png">
+                <div class="caption">Sharpened Taj (Alpha = 1) (Best Alpha)</div>
+            </div>
+            <div class="container">
+                <img src="./media/sharptaj2.png">
+                <div class="caption">Sharpened Taj (Alpha = 2)</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            <strong>Varied Sharpening Amount Analysis</strong>
+            <br>
+            As we can see, increasing the sharpening amount emphasizes the high frequencies more.
+            In the images above, alpha=0.5 results in a pretty clear image of the taj, alpha=1 makes the taj even clearer, and alpha=2 starts to make the taj a bit unrealistic in terms of high frequency.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/sharpogginger.png">
+                <div class="caption">Original Sharp Ginger</div>
+            </div>
+            <div class="container">
+                <img src="./media/gingerblur.png">
+                <div class="caption">Blurred Ginger</div>
+            </div>
+        </div>
+
+         <div class="row">
+            <div class="container">
+                <img src="./media/highfreqginger.png">
+                <div class="caption">High Frequency Ginger</div>
+            </div>
+            <div class="container">
+                <img src="./media/sharpenedginger.png">
+                <div class="caption">Sharpened Ginger</div>
+            </div>
+        </div>
 
         <hr />
 
