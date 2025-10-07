@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CS 180 Project 3</title>
+    <style>
+        body {
+            font-family: Georgia, sans-serif;
+            margin: 20px;
+            text-align: center;
+            background: radial-gradient(circle,rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            margin-top: 60px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            margin-top: 0px;
+        }
+
+        .info {
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;
+            border-radius: 8px;
+            text-align: left;
+            background: #e6e0f5;
+            padding: 50px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 35%;
+        }
+
+        .solo-row .container {
+            max-width: 60%;
+        }
+
+        .container img {
+            height: 200px;
+            width: auto;
+        }
+
+        hr {
+            margin-top: 40px;
+            margin-bottom: 40px; 
+        }
+
+        .caption {
+            font-size: 15px;
+            margin-top: 5px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            margin-right: 15px;
+            margin-left: 15px;
+        }
+
+        .stack-image-container {
+            width: 100%;
+            text-align: center;
+        }
+
+        .stack-image-container img {
+            width: 90%;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Project #3: (Auto)Stitching Photo Mosaics</h1>
+
+    <h2 style="margin-bottom: 50px">Part A: Image Warping and Mosaicing</h2>
+
+    <div class="info">
+
+        <h2>Part A.1: Shoot the Pictures</h2>
+
+        <p style="text-align: left;">
+            In this part, I took 3 sets of images with projective transformations between them.
+            I made sure to maintain a fixed center of projection by keeping my body fixed and only rotating my hands to rotate the phone camera.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/room1.jpg">
+            </div>
+            <div class="container">
+                <img src="./media/room2.jpg">
+            </div>
+            <div class="container">
+                <img src="./media/room3.jpg">
+            </div>
+            <div class="container">
+                <img src="./media/room4.jpg">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/couch1.jpg">
+            </div>
+            <div class="container">
+                <img src="./media/couch2.jpg">
+            </div>
+            <div class="container">
+                <img src="./media/couch3.jpg">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/scenery1.jpg">
+            </div>
+            <div class="container">
+                <img src="./media/scenery2.jpg">
+            </div>
+            <div class="container">
+                <img src="./media/scenery3.jpg">
+            </div>
+            <div class="container">
+                <img src="./media/scenery4.jpg">
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part A.2: Recover Homographies</h2>
+
+        <!-- <p style="text-align: left;">
+            In this part, I computed the convolutions of the camera man image using Dx and Dy. 
+            Then, I utilized the results to generate a gradient magnitude image. 
+            Lastly, using a threshold, I binarized the gradient magnitude image, resulting in a binarized edge image.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/bin0.1.png">
+                <div class="caption">Binarized Edge Image - 0.1 Threshold</div>
+            </div>
+            <div class="container">
+                <img src="./media/bin0.2.png">
+                <div class="caption">Binarized Edge Image - 0.2 Threshold (Best Image)</div>
+            </div>
+            <div class="container">
+                <img src="./media/bin0.3.png">
+                <div class="caption">Binarized Edge Image - 0.3 Threshold</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            <strong>Tradeoffs Between Edges and Noise Removal (Threshold Values)</strong>
+            <br>
+            The binarized edge image with a threshold of 0.1 includes too much noise near the ground level of the image.
+            On the other hand, the binarized edge image with a threshold of 0.2 reduces this noise while still preserving the main edges of the image.
+            Lastly, the binarized edge image with a threshold of 0.3 includes no noise but removes some critical edges of the image.
+            As a result, the binarized edge image with a threshold of 0.2 seems to be the best image for this task.
+        </p> -->
+
+        <hr />
+
+        <h2>Part A.3: Warp the Images</h2>
+
+        <!-- <p style="text-align: left;">
+            In this part, I reduced the noise present in the previous edge image. 
+            First, I created a 2D Gaussian filter that I used to convolve the original cameraman image with.
+            Then, I used Dx and Dy to get the partial derivatives with the Gaussian filter.
+            Utilizing this, I calculated the gradient magnitude and binarized gradient magnitude images similar to the process in the last part.
+            Next, I convolved the Guassian with Dx and Dy to calculate the derivatives of the Gaussian filter in X and Y.
+            Lastly, I used these DoG X and Y filters to convolve the cameraman image.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/gauss.png">
+                <div class="caption">Gaussian Filter</div>
+            </div>
+            <div class="container">
+                <img src="./media/blurgauss.png">
+                <div class="caption">Blurred Image with Gaussian Filter</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/dxgauss.png">
+                <div class="caption">Partial Derivative X with Gaussian</div>
+            </div>
+            <div class="container">
+                <img src="./media/dygauss.png">
+                <div class="caption">Partial Derivative Y with Gaussian</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/gradmaggauss.png">
+                <div class="caption">Gradient Magnitude Image with Gaussian</div>
+            </div>
+            <div class="container">
+                <img src="./media/bingauss.png">
+                <div class="caption">Binarized Edge Image with Gaussian</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            <strong>Comparison to Finite Difference Method</strong>
+            <br>
+            As we can see, the binarized edge image using the Gaussian filter has significantly less noise than the previous binarized edge image with the filter.
+            In addition, the finite difference method includes much sharper, thinner edges since there is no smoothing involved, whereas the Gaussian filter results in much thicker edges.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/dogx.png">
+                <div class="caption">DoG X Filter</div>
+            </div>
+            <div class="container">
+                <img src="./media/dogy.png">
+                <div class="caption">DoG Y Filter</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="container">
+                <img src="./media/dxdog.png">
+                <div class="caption">Partial Derivative X with DoG</div>
+            </div>
+            <div class="container">
+                <img src="./media/dydog.png">
+                <div class="caption">Partial Derivative Y with DoG</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            <strong>Comparison to Finite Difference Method + Verification</strong>
+            <br>
+            Similar to the previous example, the finite difference method had thinner, less pronounced edges for the derivative images. 
+            On the other hand, the edges are much more pronounced and thicker for the derivative images using the DoG filter.
+
+            From this part, we can verify that the DoG filtered derivative images are the same as the Gauassian filtered derivative images.
+        </p> -->
+
+        <hr />
+
+        <h2>Part A.4: Blend the Images Into a Mosaic</h2>
+  
+    </div>
+
+
+
+    <h2 style="margin-bottom: 50px; margin-top: 50px">Part 2: Fun with Frequencies</h2>
+
+    <div class="info">
+
+        <h2>Part 2.1: Image "Sharpening"</h2>
+
+        <p style="text-align: left;">
+            In this part, I used an unsharp mask filter to "sharpen" images. 
+            I first used a low pass filter to retrieve the low frequencies. 
+            Then, I subtracted this from the original image to get the high frequencies and then multiplied these high frequencies by a constant to add to the original image to "sharpen" it.
+        </p>
+
+        <p style="text-align: left;">
+            <strong>Unsharp Mask Filter Explanation</strong>
+            <br>
+            First, the unsharp mask filter blurs the original image using a 2D Gaussian filter to retrieve the low frequencies of the image. 
+            Next, it computes the high frequencies of the image by subtracting the low frequencies from the original image.
+            Lastly, it multiplies the high frequencies by a constant, alpha, and adds this to the original image in order to create the "sharpened" image, which is the final result.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/taj.png">
+                <div class="caption">Original Taj</div>
+            </div>
+            <div class="container">
+                <img src="./media/blurtaj.png">
+                <div class="caption">Blurred Taj</div>
+            </div>
+            <div class="container">
+                <img src="./media/highfreqtaj.png">
+                <div class="caption">High Frequency Taj</div>
+            </div>
+        </div>
+
+         <div class="row">
+            <div class="container">
+                <img src="./media/sharptaj0.5.png">
+                <div class="caption">Sharpened Taj (Alpha = 0.5)</div>
+            </div>
+            <div class="container">
+                <img src="./media/sharptaj1.png">
+                <div class="caption">Sharpened Taj (Alpha = 1) (Best Alpha)</div>
+            </div>
+            <div class="container">
+                <img src="./media/sharptaj2.png">
+                <div class="caption">Sharpened Taj (Alpha = 2)</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            <strong>Varied Sharpening Amount Analysis</strong>
+            <br>
+            As we can see, increasing the sharpening amount emphasizes the high frequencies more.
+            In the images above, alpha=0.5 results in a pretty clear image of the taj, alpha=1 makes the taj even clearer, and alpha=2 starts to make the taj a bit unrealistic in terms of high frequency.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/sharpogginger.png">
+                <div class="caption">Original Sharp Ginger</div>
+            </div>
+            <div class="container">
+                <img src="./media/gingerblur.png">
+                <div class="caption">Blurred Ginger</div>
+            </div>
+        </div>
+
+         <div class="row">
+            <div class="container">
+                <img src="./media/highfreqginger.png">
+                <div class="caption">High Frequency Ginger</div>
+            </div>
+            <div class="container">
+                <img src="./media/sharpenedginger.png">
+                <div class="caption">Sharpened Ginger</div>
+            </div>
+        </div>
+
+         <p style="text-align: left;">
+            <strong>Original and Sharpened Comparison</strong>
+            <br>
+            The original image is clearly better than the sharpened image of Ginger. 
+            This is because blurring Ginger gets rid of some high frequencies that cannot be replicated after sharpened the lower frequency image.
+        </p>
+
+        <hr />
+
+        <h2>Part 2.2: Hybrid Images</h2>
+
+        <p style="text-align: left;">
+            In this part, I created hybrid images by blending the low frequency and high frequency portions of images.
+            First, I aligned the images by aligning their centered points, rescaling, rotating, and matching image sizes. 
+            Next, I retrieved the low frequency of one image, and the high frequency of the other image. 
+            Lastly, I combined both these high and low frequency images to get the final hybrid image result.
+            The resulting hybrid image shows the high frequencies when viewed up close and the low frequencies when viewed from far away.
+        </p>
+
+         <div class="row">
+            <div class="container">
+                <img src="./media/derek.png">
+                <div class="caption">Derek</div>
+            </div>
+            <div class="container">
+                <img src="./media/nutmeg.png">
+                <div class="caption">Nutmeg</div>
+            </div>
+             <div class="container">
+                <img src="./media/dereknutmeg.png">
+                <div class="caption">Derek & Nutmeg Hybrid</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/cow.png" style="height: 150px;">
+                <div class="caption">Cow</div>
+            </div>
+            <div class="container">
+                <img src="./media/pig.png" style="height: 150px;">
+                <div class="caption">Pig</div>
+            </div>
+             <div class="container">
+                <img src="./media/pigcow.png" style="height: 150px;">
+                <div class="caption">Cow & Pig Hybrid</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/dog.png">
+                <div class="caption">Dog</div>
+            </div>
+            <div class="container">
+                <img src="./media/tiger.png">
+                <div class="caption">Tiger</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/aligneddog.png">
+                <div class="caption">Aligned Dog</div>
+            </div>
+            <div class="container">
+                <img src="./media/alignedtiger.png">
+                <div class="caption">Aligned Tiger</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/lowfreqdog.png">
+                <div class="caption">Low Frequency Dog (sigma = 2)</div>
+            </div>
+            <div class="container">
+                <img src="./media/highfreqtiger.png">
+                <div class="caption">High Frequency Tiger (sigma = 3)</div>
+            </div>
+            <div class="container">
+                <img src="./media/dogtiger.png">
+                <div class="caption">Dog & Tiger Hybrid</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/fftdog.png">
+                <div class="caption">FFT Dog</div>
+            </div>
+            <div class="container">
+                <img src="./media/ffttiger.png">
+                <div class="caption">FFT Tiger</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/fftlowdog.png">
+                <div class="caption">FFT Low Frequency Dog</div>
+            </div>
+            <div class="container">
+                <img src="./media/ffthightiger.png">
+                <div class="caption">FFT High Frequency Tiger</div>
+            </div>
+            <div class="container">
+                <img src="./media/fftdogtiger.png">
+                <div class="caption">FFT Dog & Tiger Hybrid</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 2.3: Gaussian and Laplacian Stacks</h2>
+
+        <p style="text-align: left;">
+            In this part, I created Gaussian and Laplacian stacks for the orange and apple images, and I created a Laplacian pyramid blending figure with the resulting oraple.
+            I created the Gaussian stacks by iteratively applying a Gaussian filter again and again to each level.
+            For the Laplacian stacks, I subtracted the current and subsequent levels of the Gaussian stack to generate each level. For the last level, I used the last level of the Gaussian stack.
+            To create the Laplacian pyramid blending figure, I iterated through all levels of both the orange and apple Laplacian stacks.
+            In each iteration, I used image blending with a mask to get the current level's oraple image. I utilized the formula I = m * I_apple + (1-m) * I_orange, where m is the mask, in order to do this.
+            Then I displayed these blended images as well as the masked orange and apple images for levels 0, 2, and 4.
+            In the final row, I displayed the final blended oraple as well as the final layer masked orange and apple images.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/orangegauss.png">
+                <div class="caption">Orange Gaussian Stack</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/orangelap.png">
+                <div class="caption">Orange Laplacian Stack</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/applegauss.png">
+                <div class="caption">Apple Gaussian Stack</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/applelap.png">
+                <div class="caption">Apple Laplacian Stack</div>
+            </div>
+        </div>
+
+        <p style="text-align: center; font-weight: bold; margin-top: 40px;">Laplacian Pyramid Blending Figure (Figure 3.42)</p>
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/lappyr0.png">
+            </div>
+        </div>
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/lappyr2.png">
+            </div>
+        </div>
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/lappyr4.png">
+            </div>
+        </div>
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/lappyrfinal.png">
+            </div>
+        </div>
+
+        <hr />
+
+         <h2>Part 2.4: Multiresolution Blending (a.k.a. the Oraple)</h2>
+
+         <p style="text-align: left;">
+            In this part, I similary created Gaussian and Laplacian stacks for all my images, and I created a Laplacian pyramid blending figure with the resulting yoda pointing to a star portal image.
+            I created the Guassian and Laplacian stacks as described above in the 2.3 section.
+
+            Specifically for the yoda pointing to star portal image, I used an irregular circular mask to depict the portal. For this, I had to pad the circular mask image with zeros to match the overall yoda image size. 
+            I also rescaled the circle to be smaller for the portal to make it seem as though yoda was pointing at it.
+            To create the Laplacian pyramid blending figure, I iterated through all levels of both the baby yoda and stars Laplacian stacks.
+            In each iteration, I used image blending with a mask to get the current level's blended image. I utilized the formula I = m * I_stars + (1-m) * I_yoda, where m is the mask, in order to do this.
+            Then I displayed these blended images as well as the masked yoda and stars images for levels 0, 2, and 4.
+            In the final row, I displayed the final blended yoda pointing at star portal image as well as the final layer masked yoda and stars images.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/oraple.png" style="width: 30%;">
+                <div class="caption">Oraple</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/nycday.png" style="height: 150px;">
+                <div class="caption">NYC Skyline Day</div>
+            </div>
+            <div class="container">
+                <img src="./media/nycsunset.png" style="height: 150px;">
+                <div class="caption">NYC Skyline Sunset</div>
+            </div>
+            <div class="container">
+                <img src="./media/nycblend.png" style="height: 150px;">
+                <div class="caption">NYC Skyline Day & Sunset Blend</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container" style="margin-right: 20px">
+                <img src="./media/ogyoda.png" style="height: 150px;">
+                <div class="caption">Original Baby Yoda Image</div>
+            </div>
+            <div class="container" style="margin-left: 20px">
+                <img src="./media/ogstars.png" style="height: 150px;">
+                <div class="caption">Original Stars Image</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container" style="margin-right: 20px">
+                <img src="./media/circularmask.png" style="height: 150px;">
+                <div class="caption">Circular Mask</div>
+            </div>
+            <div class="container" style="margin-left: 20px">
+                <img src="./media/yodastars.png" style="height: 150px;">
+                <div class="caption">Baby Yoda Pointing to Star Portal (Final Image)</div>
+            </div>
+        </div>
+
+        <p style="text-align: center; font-weight: bold; margin-top: 40px;">Laplacian Pyramid Blending Figure</p>
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/lapblendfig.png">
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Conclusion</h2>
+
+         <p style="text-align: left;">
+            The most important thing I learned from this project was how intricate the process of image blending and image editing truly is.
+            Overall, the process seems so much simpler when utilizing user interfaces to automatically generate these images for you, but the mathematical equations behind these edits are so complex.
+            This project has made me appreciate these tools and libraries that efficiently optimize this process so much more, and I am now eager to understand the inner workings of additional imaging techniques. 
+        </p>
+
+    </div>
+</body>
+</html>
