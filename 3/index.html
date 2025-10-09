@@ -127,36 +127,72 @@
 
         <h2>Part A.2: Recover Homographies</h2>
 
-        <!-- <p style="text-align: left;">
-            In this part, I computed the convolutions of the camera man image using Dx and Dy. 
-            Then, I utilized the results to generate a gradient magnitude image. 
-            Lastly, using a threshold, I binarized the gradient magnitude image, resulting in a binarized edge image.
+        <p style="text-align: left;">
+            In this part, I calculated the homography matrix by taking in the correspondence points per image. 
         </p>
 
         <div class="row">
-            <div class="container">
-                <img src="./media/bin0.1.png">
-                <div class="caption">Binarized Edge Image - 0.1 Threshold</div>
-            </div>
-            <div class="container">
-                <img src="./media/bin0.2.png">
-                <div class="caption">Binarized Edge Image - 0.2 Threshold (Best Image)</div>
-            </div>
-            <div class="container">
-                <img src="./media/bin0.3.png">
-                <div class="caption">Binarized Edge Image - 0.3 Threshold</div>
+            <div class="stack-image-container">
+                <img src="./media/computeh.png">
+                <div class="caption">Function to compute homography matrix from correspondence points per image.</div>
             </div>
         </div>
 
         <p style="text-align: left;">
-            <strong>Tradeoffs Between Edges and Noise Removal (Threshold Values)</strong>
-            <br>
-            The binarized edge image with a threshold of 0.1 includes too much noise near the ground level of the image.
-            On the other hand, the binarized edge image with a threshold of 0.2 reduces this noise while still preserving the main edges of the image.
-            Lastly, the binarized edge image with a threshold of 0.3 includes no noise but removes some critical edges of the image.
-            As a result, the binarized edge image with a threshold of 0.2 seems to be the best image for this task.
-        </p> -->
+            Here is the system of equations utilized to calculate the homography matrix
+        </p>
 
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/eqs.jpeg">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/room1c.jpg">
+            </div>
+            <div class="container">
+                <img src="./media/room2c.jpg">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/homoroom.png">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/couch1c.jpg">
+            </div>
+            <div class="container">
+                <img src="./media/couch2c.jpg">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/homocouch.png">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/scenery1c.jpg">
+            </div>
+            <div class="container">
+                <img src="./media/scenery2c.jpg">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/homoscenery.png">
+            </div>
+        </div>
+        
         <hr />
 
         <h2>Part A.3: Warp the Images</h2>
