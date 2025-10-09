@@ -167,7 +167,7 @@
 
         <div class="row">
             <div class="stack-image-container">
-                <img src="./media/homoroom.png" style="height: 150px;">
+                <img src="./media/homoroom.png" style="height: 75px;">
             </div>
         </div>
 
@@ -184,7 +184,7 @@
 
         <div class="row">
             <div class="stack-image-container">
-                <img src="./media/homocouch.png" style="height: 150px;">
+                <img src="./media/homocouch.png" style="height: 75px;">
             </div>
         </div>
 
@@ -201,13 +201,83 @@
 
         <div class="row">
             <div class="stack-image-container">
-                <img src="./media/homoscenery.png" style="height: 150px;">
+                <img src="./media/homoscenery.png" style="height: 75px;">
             </div>
         </div>
 
         <hr />
 
         <h2>Part A.3: Warp the Images</h2>
+
+        <p style="text-align: left;">
+            In this part, I wrote functions to warp the images using both nearest neighbor interpolation and bilinear interpolation utilizing inverse warping.
+            Then, I applied these warping functions on 2 images for rectification.
+            First, I retrieved the bounding box of the image and afterwards I iterated through the ranges of points to apply the inverse homotgraphy matrix on the output points to generate the input points.
+            I normalized these input points and then set the warped image indices to the appropriate image points. In addition, I set the alpha channel values to 1 where the image is defined and 0 otherwise.
+            For nearest neighbor interpolation, I rounded the input coordinates to the nearest pixel value. For bilinear interpolation, I used a weighted average of the 4 neighboring pixels for the input coordinates.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/warpnn.png">
+                <div class="caption">Function to warp image using nearest neighbor interpolation.</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/warpb.png">
+                <div class="caption">Function to warp image using bilinear interpolation.</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/tv.jpg" style="height: 200px; width: auto;">
+                <div class="caption">Original TV Image</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/tvnn.jpg">
+                <div class="caption">Nearest Neighbor Warped TV Image</div>
+            </div>
+            <div class="container">
+                <img src="./media/tvb.jpg">
+                <div class="caption">Bilinear Warped TV Image</div>
+            </div>
+        </div>
+
+         <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/valkyries.jpg" style="height: 300px; width: auto;">
+                <div class="caption">Original Valkyries Image</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/valkyriesnn.jpg">
+                <div class="caption">Nearest Neighbor Warped Valkyries Image</div>
+            </div>
+            <div class="container">
+                <img src="./media/valkyriesb.jpg">
+                <div class="caption">Bilinear Warped Valkyries Image</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            <strong>Nearest Neighbor Interpolation vs. Bilinear Interpolation</strong>
+            <br>
+            FIX SECTION:
+            As we can see, the binarized edge image using the Gaussian filter has significantly less noise than the previous binarized edge image with the filter.
+            In addition, the finite difference method includes much sharper, thinner edges since there is no smoothing involved, whereas the Gaussian filter results in much thicker edges.
+        </p>
+
+        <hr />
+
+        <h2>Part A.4: Blend the Images Into a Mosaic</h2>
 
         <p style="text-align: left;">
             In this part, I wrote functions to warp the images using both nearest neighbor interpolation and bilinear interpolation utilizing inverse warping.
@@ -274,10 +344,6 @@
             As we can see, the binarized edge image using the Gaussian filter has significantly less noise than the previous binarized edge image with the filter.
             In addition, the finite difference method includes much sharper, thinner edges since there is no smoothing involved, whereas the Gaussian filter results in much thicker edges.
         </p>
-
-        <hr />
-
-        <h2>Part A.4: Blend the Images Into a Mosaic</h2>
   
     </div>
 
