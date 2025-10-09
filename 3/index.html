@@ -270,9 +270,10 @@
         <p style="text-align: left;">
             <strong>Nearest Neighbor Interpolation vs. Bilinear Interpolation</strong>
             <br>
-            FIX SECTION:
-            As we can see, the binarized edge image using the Gaussian filter has significantly less noise than the previous binarized edge image with the filter.
-            In addition, the finite difference method includes much sharper, thinner edges since there is no smoothing involved, whereas the Gaussian filter results in much thicker edges.
+            The warped images generated using bilinear interpolation are slightly smoother than the warped images generated using nearest neighbor interpolation. 
+            Specifically, for the TV images, the border around the TV is smoother in the bilinear interpolated image, especially on the right edge.
+            This can similarly be seen on the borders of the valkyries jersey towel. 
+            Although the difference is very subtle, it is still there.
         </p>
 
         <hr />
@@ -280,70 +281,68 @@
         <h2>Part A.4: Blend the Images Into a Mosaic</h2>
 
         <p style="text-align: left;">
-            In this part, I wrote functions to warp the images using both nearest neighbor interpolation and bilinear interpolation utilizing inverse warping.
-            Then, I applied these warping functions on 2 images for rectification.
-            First, I retrieved the bounding box of the image and afterwards I iterated through the ranges of points to apply the inverse homotgraphy matrix on the output points to generate the input points.
-            I normalized these input points and then set the warped image indices to the appropriate image points. In addition, I set the alpha channel values to 1 where the image is defined and 0 otherwise.
-            For nearest neighbor interpolation, I rounded the input coordinates to the nearest pixel value. For bilinear interpolation, I used a weighted average of the 4 neighboring pixels for the input coordinates.
+            In this part, I blended the original images from A.1 into mosaics. 
+            First, I generated the homography matrices for both images. I made the first image the homography matrix recovered in A.2 and the other the identity matrix to warp the first image onto the second.
+            Next, I retrieved the bounding boxes for both images using the previous bounding box function I wrote in A.3.
+            Afterwards, I created a homography matrix for the final mosaic and multiplied that by the image homography matrices to generate the final image homographies.
+            To calculate the alpha channel for each image, I set it to 1 at the center and 0 at the edges of the image, falling off linearly.
+            Lastly, I used a weighted average for the final image utilizing these alpha channel values to retrieve the final mosaic.
+
         </p>
+
+         <div class="row">
+            <div class="container">
+                <img src="./media/room1.jpg">
+                <div class="caption">Room 1 Image</div>
+            </div>
+            <div class="container">
+                <img src="./media/room2.jpg">
+                <div class="caption">Room 2 Image</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/room_mosaic.png">
+                <div class="caption">Room Mosaic</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/couch1.jpg">
+                <div class="caption">Couch 1 Image</div>
+            </div>
+            <div class="container">
+                <img src="./media/couch2.jpg">
+                <div class="caption">Couch 2 Image</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/couch_mosaic.png">
+                <div class="caption">Couch Mosaic</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/scenery1.jpg">
+                <div class="caption">Scenery 1 Image</div>
+            </div>
+            <div class="container">
+                <img src="./media/scenery2.jpg">
+                <div class="caption">Scenery 2 Image</div>
+            </div>
+        </div>
 
         <div class="row">
             <div class="stack-image-container">
                 <img src="./media/warpnn.png">
-                <div class="caption">Function to warp image using nearest neighbor interpolation.</div>
+                <div class="caption">Scenery Mosaic</div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/warpb.png">
-                <div class="caption">Function to warp image using bilinear interpolation.</div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/tv.jpg" style="height: 150px">
-                <div class="caption">Original TV Image</div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="container">
-                <img src="./media/tvnn.jpg">
-                <div class="caption">Nearest Neighbor Warped TV Image</div>
-            </div>
-            <div class="container">
-                <img src="./media/tvb.jpg">
-                <div class="caption">Bilinear Warped TV Image</div>
-            </div>
-        </div>
-
-         <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/valkyries.jpg" style="height: 150px">
-                <div class="caption">Original Valkyries Image</div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="container">
-                <img src="./media/valkyriesnn.jpg">
-                <div class="caption">Nearest Neighbor Warped Valkyries Image</div>
-            </div>
-            <div class="container">
-                <img src="./media/valkyriesb.jpg">
-                <div class="caption">Bilinear Warped Valkyries Image</div>
-            </div>
-        </div>
-
-        <p style="text-align: left;">
-            <strong>Nearest Neighbor Interpolation vs. Bilinear Interpolation</strong>
-            <br>
-            FIX SECTION:
-            As we can see, the binarized edge image using the Gaussian filter has significantly less noise than the previous binarized edge image with the filter.
-            In addition, the finite difference method includes much sharper, thinner edges since there is no smoothing involved, whereas the Gaussian filter results in much thicker edges.
-        </p>
   
     </div>
 
