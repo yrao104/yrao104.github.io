@@ -99,27 +99,33 @@
         <div class="row">
             <div class="container">
                 <img src="./media/room1.jpg">
+                <div class="caption">Room Image 1</div>
             </div>
             <div class="container">
                 <img src="./media/room2.jpg">
+                <div class="caption">Room Image 2</div>
             </div>
         </div>
 
         <div class="row">
             <div class="container">
                 <img src="./media/couch1.jpg">
+                <div class="caption">Couch Image 1</div>
             </div>
             <div class="container">
                 <img src="./media/couch2.jpg">
+                <div class="caption">Couch Image 2</div>
             </div>
         </div>
 
         <div class="row">
             <div class="container">
                 <img src="./media/scenery1.jpg">
+                <div class="caption">Scenery Image 1</div>
             </div>
             <div class="container">
                 <img src="./media/scenery2.jpg">
+                <div class="caption">Scenery Image 2</div>
             </div>
         </div>
 
@@ -151,9 +157,11 @@
         <div class="row">
             <div class="container">
                 <img src="./media/room1c.jpg">
+                <div class="caption">Room Image 1 Correspondence</div>
             </div>
             <div class="container">
                 <img src="./media/room2c.jpg">
+                <div class="caption">Room Image 2 Correspondence</div>
             </div>
         </div>
 
@@ -166,9 +174,11 @@
         <div class="row">
             <div class="container">
                 <img src="./media/couch1c.jpg">
+                <div class="caption">Couch Image 1 Correspondence</div>
             </div>
             <div class="container">
                 <img src="./media/couch2c.jpg">
+                <div class="caption">Couch Image 2 Correspondence</div>
             </div>
         </div>
 
@@ -181,9 +191,11 @@
         <div class="row">
             <div class="container">
                 <img src="./media/scenery1c.jpg">
+                <div class="caption">Scenery Image 1 Correspondence</div>
             </div>
             <div class="container">
                 <img src="./media/scenery2c.jpg">
+                <div class="caption">Scenery Image 2 Correspondence</div>
             </div>
         </div>
 
@@ -192,89 +204,76 @@
                 <img src="./media/homoscenery.png">
             </div>
         </div>
-        
+
         <hr />
 
         <h2>Part A.3: Warp the Images</h2>
 
-        <!-- <p style="text-align: left;">
-            In this part, I reduced the noise present in the previous edge image. 
-            First, I created a 2D Gaussian filter that I used to convolve the original cameraman image with.
-            Then, I used Dx and Dy to get the partial derivatives with the Gaussian filter.
-            Utilizing this, I calculated the gradient magnitude and binarized gradient magnitude images similar to the process in the last part.
-            Next, I convolved the Guassian with Dx and Dy to calculate the derivatives of the Gaussian filter in X and Y.
-            Lastly, I used these DoG X and Y filters to convolve the cameraman image.
+        <p style="text-align: left;">
+            In this part, I wrote functions to warp the images using both nearest neighbor interpolation and bilinear interpolation utilizing inverse warping.
+            Then, I applied these warping functions on 2 images for rectification.
+            First, I retrieved the bounding box of the image and afterwards I iterated through the ranges of points to apply the inverse homotgraphy matrix on the output points to generate the input points.
+            I normalized these input points and then set the warped image indices to the appropriate image points. In addition, I set the alpha channel values to 1 where the image is defined and 0 otherwise.
+            For nearest neighbor interpolation, I rounded the input coordinates to the nearest pixel value. For bilinear interpolation, I used a weighted average of the 4 neighboring pixels for the input coordinates.
         </p>
 
         <div class="row">
-            <div class="container">
-                <img src="./media/gauss.png">
-                <div class="caption">Gaussian Filter</div>
+            <div class="stack-image-container">
+                <img src="./media/warpnn.png">
+                <div class="caption">Function to warp image using nearest neighbor interpolation.</div>
             </div>
-            <div class="container">
-                <img src="./media/blurgauss.png">
-                <div class="caption">Blurred Image with Gaussian Filter</div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/warpb.png">
+                <div class="caption">Function to warp image using bilinear interpolation.</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/tv.jpg">
+                <div class="caption">Original TV Image</div>
             </div>
         </div>
 
         <div class="row">
             <div class="container">
-                <img src="./media/dxgauss.png">
-                <div class="caption">Partial Derivative X with Gaussian</div>
+                <img src="./media/tvnn.jpg">
+                <div class="caption">Nearest Neighbor Warped TV Image</div>
             </div>
             <div class="container">
-                <img src="./media/dygauss.png">
-                <div class="caption">Partial Derivative Y with Gaussian</div>
+                <img src="./media/tvb.jpg">
+                <div class="caption">Bilinear Warped TV Image</div>
+            </div>
+        </div>
+
+         <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/valkyries.jpg">
+                <div class="caption">Original Valkyries Image</div>
             </div>
         </div>
 
         <div class="row">
             <div class="container">
-                <img src="./media/gradmaggauss.png">
-                <div class="caption">Gradient Magnitude Image with Gaussian</div>
+                <img src="./media/valkyriesnn.jpg">
+                <div class="caption">Nearest Neighbor Warped Valkyries Image</div>
             </div>
             <div class="container">
-                <img src="./media/bingauss.png">
-                <div class="caption">Binarized Edge Image with Gaussian</div>
+                <img src="./media/valkyriesb.jpg">
+                <div class="caption">Bilinear Warped Valkyries Image</div>
             </div>
         </div>
 
         <p style="text-align: left;">
-            <strong>Comparison to Finite Difference Method</strong>
+            <strong>Nearest Neighbor Interpolation vs. Bilinear Interpolation</strong>
             <br>
+            FIX SECTION:
             As we can see, the binarized edge image using the Gaussian filter has significantly less noise than the previous binarized edge image with the filter.
             In addition, the finite difference method includes much sharper, thinner edges since there is no smoothing involved, whereas the Gaussian filter results in much thicker edges.
         </p>
-
-        <div class="row">
-            <div class="container">
-                <img src="./media/dogx.png">
-                <div class="caption">DoG X Filter</div>
-            </div>
-            <div class="container">
-                <img src="./media/dogy.png">
-                <div class="caption">DoG Y Filter</div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="container">
-                <img src="./media/dxdog.png">
-                <div class="caption">Partial Derivative X with DoG</div>
-            </div>
-            <div class="container">
-                <img src="./media/dydog.png">
-                <div class="caption">Partial Derivative Y with DoG</div>
-            </div>
-        </div>
-
-        <p style="text-align: left;">
-            <strong>Comparison to Finite Difference Method + Verification</strong>
-            <br>
-            Similar to the previous example, the finite difference method had thinner, less pronounced edges for the derivative images. 
-            On the other hand, the edges are much more pronounced and thicker for the derivative images using the DoG filter.
-
-            From this part, we can verify that the DoG filtered derivative images are the same as the Gauassian filtered derivative images.
-        </p> -->
 
         <hr />
 
