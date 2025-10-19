@@ -516,11 +516,10 @@
         <p style="text-align: left;">
             <strong>Comparison Between Manually and Automatically Stitching</strong>
             <br>
-            FIX BELOW
-            The warped images generated using bilinear interpolation are slightly smoother than the warped images generated using nearest neighbor interpolation. 
-            Specifically, for the TV images, the border around the TV is smoother in the bilinear interpolated image, especially on the right edge.
-            This can similarly be seen on the borders of the valkyries jersey towel. 
-            Although the difference is very subtle, it is still there.
+            The automatically stitched mosaics seem to be slightly clearer near the seam areas. 
+            If you zoom in or look closely when comparing the manual and automatic stitching, the automatic stitching has clearer pixels along these seams due to feature matching.
+            This makes sense because I manually selected the points in part A, which would result in more error in comparison to corner identification with Harris and ANMS. 
+            Since there is less room for error with a coded algorithm, it makes sense that automatic stitching would have better alignment.
         </p>
 
         <hr />
