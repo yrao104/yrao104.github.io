@@ -348,327 +348,180 @@
 
 
 
-    <!-- <h2 style="margin-bottom: 50px; margin-top: 50px">Part 2: Fun with Frequencies</h2>
+    <h2 style="margin-bottom: 50px; margin-top: 50px">Part B: Feature Matching for Autostitching</h2>
 
     <div class="info">
 
-        <h2>Part 2.1: Image "Sharpening"</h2>
+        <h2>Part B.1: Harris Corner Detection</h2>
 
         <p style="text-align: left;">
-            In this part, I used an unsharp mask filter to "sharpen" images. 
-            I first used a low pass filter to retrieve the low frequencies. 
-            Then, I subtracted this from the original image to get the high frequencies and then multiplied these high frequencies by a constant to add to the original image to "sharpen" it.
-        </p>
-
-        <p style="text-align: left;">
-            <strong>Unsharp Mask Filter Explanation</strong>
-            <br>
-            First, the unsharp mask filter blurs the original image using a 2D Gaussian filter to retrieve the low frequencies of the image. 
-            Next, it computes the high frequencies of the image by subtracting the low frequencies from the original image.
-            Lastly, it multiplies the high frequencies by a constant, alpha, and adds this to the original image in order to create the "sharpened" image, which is the final result.
+            In this part, utilized the starter code with the get_harris_corners and dist2 functions to first get the Harris corners and plot them without ANMS.
+            Next, I utilized Adaptive Non-Maximal Supression, or ANMS, by getting the Harris corners, calculating the corner strength function, and looping through all corners to calculate the minimum suppression radius.
+            I utilized a mask to filter out points that were not robust based on the corner strength function.
+            Next, I calculated the suppression radius per point and finally retrieved the top 500 coordinates with the largest suppression radii. 
+            Utilizing ANMS ensured that the chosen coordinates were better distributed across the image rather than grouped in certian areas.
         </p>
 
         <div class="row">
             <div class="container">
-                <img src="./media/taj.png">
-                <div class="caption">Original Taj</div>
+                <img src="./media/harris.png">
+                <div class="caption">Harris Corners</div>
             </div>
             <div class="container">
-                <img src="./media/blurtaj.png">
-                <div class="caption">Blurred Taj</div>
-            </div>
-            <div class="container">
-                <img src="./media/highfreqtaj.png">
-                <div class="caption">High Frequency Taj</div>
+                <img src="./media/harris_anms.png">
+                <div class="caption">Harris Corners with ANMS</div>
             </div>
         </div>
-
-         <div class="row">
-            <div class="container">
-                <img src="./media/sharptaj0.5.png">
-                <div class="caption">Sharpened Taj (Alpha = 0.5)</div>
-            </div>
-            <div class="container">
-                <img src="./media/sharptaj1.png">
-                <div class="caption">Sharpened Taj (Alpha = 1) (Best Alpha)</div>
-            </div>
-            <div class="container">
-                <img src="./media/sharptaj2.png">
-                <div class="caption">Sharpened Taj (Alpha = 2)</div>
-            </div>
-        </div>
-
-        <p style="text-align: left;">
-            <strong>Varied Sharpening Amount Analysis</strong>
-            <br>
-            As we can see, increasing the sharpening amount emphasizes the high frequencies more.
-            In the images above, alpha=0.5 results in a pretty clear image of the taj, alpha=1 makes the taj even clearer, and alpha=2 starts to make the taj a bit unrealistic in terms of high frequency.
-        </p>
-
-        <div class="row">
-            <div class="container">
-                <img src="./media/sharpogginger.png">
-                <div class="caption">Original Sharp Ginger</div>
-            </div>
-            <div class="container">
-                <img src="./media/gingerblur.png">
-                <div class="caption">Blurred Ginger</div>
-            </div>
-        </div>
-
-         <div class="row">
-            <div class="container">
-                <img src="./media/highfreqginger.png">
-                <div class="caption">High Frequency Ginger</div>
-            </div>
-            <div class="container">
-                <img src="./media/sharpenedginger.png">
-                <div class="caption">Sharpened Ginger</div>
-            </div>
-        </div>
-
-         <p style="text-align: left;">
-            <strong>Original and Sharpened Comparison</strong>
-            <br>
-            The original image is clearly better than the sharpened image of Ginger. 
-            This is because blurring Ginger gets rid of some high frequencies that cannot be replicated after sharpened the lower frequency image.
-        </p>
 
         <hr />
 
-        <h2>Part 2.2: Hybrid Images</h2>
+        <h2>Part B.2: Feature Descriptor Extraction</h2>
 
         <p style="text-align: left;">
-            In this part, I created hybrid images by blending the low frequency and high frequency portions of images.
-            First, I aligned the images by aligning their centered points, rescaling, rotating, and matching image sizes. 
-            Next, I retrieved the low frequency of one image, and the high frequency of the other image. 
-            Lastly, I combined both these high and low frequency images to get the final hybrid image result.
-            The resulting hybrid image shows the high frequencies when viewed up close and the low frequencies when viewed from far away.
+            In this part, I extracted the features of the image.
+            First, I retrieved the ANMS corners using the previous part (B.1). 
+            Then, I downsampled the image by blurring it using a Gaussian filter.
+            After, I looped through all of the ANMS corners and sampled patches from 40x40 windows around the corners.
+            I exxtraced axis-aligned 8x8 patches from these windows and used bias/gain normalization for the visualizations to be in the [0, 1] range.
+            Lastly, I flattened these normalized patches to convert them to feature descriptor vectors.
+            Below are 16 of these feature descriptor vectors.
         </p>
 
          <div class="row">
             <div class="container">
-                <img src="./media/derek.png">
-                <div class="caption">Derek</div>
+                <img src="./media/f1.png" style="height: 200px; width: auto;">
             </div>
             <div class="container">
-                <img src="./media/nutmeg.png">
-                <div class="caption">Nutmeg</div>
+                <img src="./media/f2.png" style="height: 200px; width: auto;">
             </div>
              <div class="container">
-                <img src="./media/dereknutmeg.png">
-                <div class="caption">Derek & Nutmeg Hybrid</div>
+                <img src="./media/f3.png" style="height: 200px; width: auto;">
+            </div>
+            <div class="container">
+                <img src="./media/f4.png" style="height: 200px; width: auto;">
             </div>
         </div>
 
         <div class="row">
             <div class="container">
-                <img src="./media/cow.png" style="height: 150px;">
-                <div class="caption">Cow</div>
+                <img src="./media/f5.png" style="height: 200px; width: auto;">
             </div>
             <div class="container">
-                <img src="./media/pig.png" style="height: 150px;">
-                <div class="caption">Pig</div>
+                <img src="./media/f6.png" style="height: 200px; width: auto;">
             </div>
              <div class="container">
-                <img src="./media/pigcow.png" style="height: 150px;">
-                <div class="caption">Cow & Pig Hybrid</div>
+                <img src="./media/f7.png" style="height: 200px; width: auto;">
+            </div>
+            <div class="container">
+                <img src="./media/f8.png" style="height: 200px; width: auto;">
             </div>
         </div>
 
         <div class="row">
             <div class="container">
-                <img src="./media/dog.png">
-                <div class="caption">Dog</div>
+                <img src="./media/f9.png" style="height: 200px; width: auto;">
             </div>
             <div class="container">
-                <img src="./media/tiger.png">
-                <div class="caption">Tiger</div>
+                <img src="./media/f10.png" style="height: 200px; width: auto;">
             </div>
-        </div>
-
-        <div class="row">
-            <div class="container">
-                <img src="./media/aligneddog.png">
-                <div class="caption">Aligned Dog</div>
+             <div class="container">
+                <img src="./media/f11.png" style="height: 200px; width: auto;">
             </div>
             <div class="container">
-                <img src="./media/alignedtiger.png">
-                <div class="caption">Aligned Tiger</div>
+                <img src="./media/f12.png" style="height: 200px; width: auto;">
             </div>
         </div>
 
         <div class="row">
             <div class="container">
-                <img src="./media/lowfreqdog.png">
-                <div class="caption">Low Frequency Dog (sigma = 2)</div>
+                <img src="./media/f13.png" style="height: 200px; width: auto;">
             </div>
             <div class="container">
-                <img src="./media/highfreqtiger.png">
-                <div class="caption">High Frequency Tiger (sigma = 3)</div>
+                <img src="./media/f14.png" style="height: 200px; width: auto;">
+            </div>
+             <div class="container">
+                <img src="./media/f15.png" style="height: 200px; width: auto;">
             </div>
             <div class="container">
-                <img src="./media/dogtiger.png">
-                <div class="caption">Dog & Tiger Hybrid</div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="container">
-                <img src="./media/fftdog.png">
-                <div class="caption">FFT Dog</div>
-            </div>
-            <div class="container">
-                <img src="./media/ffttiger.png">
-                <div class="caption">FFT Tiger</div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="container">
-                <img src="./media/fftlowdog.png">
-                <div class="caption">FFT Low Frequency Dog</div>
-            </div>
-            <div class="container">
-                <img src="./media/ffthightiger.png">
-                <div class="caption">FFT High Frequency Tiger</div>
-            </div>
-            <div class="container">
-                <img src="./media/fftdogtiger.png">
-                <div class="caption">FFT Dog & Tiger Hybrid</div>
+                <img src="./media/f16.png" style="height: 200px; width: auto;">
             </div>
         </div>
 
         <hr />
 
-        <h2>Part 2.3: Gaussian and Laplacian Stacks</h2>
+        <h2>Part B.3: Feature Matching</h2>
 
         <p style="text-align: left;">
-            In this part, I created Gaussian and Laplacian stacks for the orange and apple images, and I created a Laplacian pyramid blending figure with the resulting oraple.
-            I created the Gaussian stacks by iteratively applying a Gaussian filter again and again to each level.
-            For the Laplacian stacks, I subtracted the current and subsequent levels of the Gaussian stack to generate each level. For the last level, I used the last level of the Gaussian stack.
-            To create the Laplacian pyramid blending figure, I iterated through all levels of both the orange and apple Laplacian stacks.
-            In each iteration, I used image blending with a mask to get the current level's oraple image. I utilized the formula I = m * I_apple + (1-m) * I_orange, where m is the mask, in order to do this.
-            Then I displayed these blended images as well as the masked orange and apple images for levels 0, 2, and 4.
-            In the final row, I displayed the final blended oraple as well as the final layer masked orange and apple images.
+            In this part, I matched features across 2 images. 
+            First, I retrieved the feature descriptor vectors for both images using the previous part (B.2). 
+            Next, I calculated an array of the difference in distances between both feature descriptor vectors by utilizing the provided dist2 function.
+            Next, I looped through these distance differences and retrieved the error for the nearest neighbor and error for the second nearest neighbor by sorting these distances for each index.
+            Utilizing this, I applied Lowe's technique with a threshold value of 0.5 to identify which matches were best.
+            With this technique, I was able to identify the best matching features. Utilizing Lowe's technique, I was able to retrieve 25 matching features as shown below.
         </p>
 
         <div class="row">
             <div class="stack-image-container">
-                <img src="./media/orangegauss.png">
-                <div class="caption">Orange Gaussian Stack</div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/orangelap.png">
-                <div class="caption">Orange Laplacian Stack</div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/applegauss.png">
-                <div class="caption">Apple Gaussian Stack</div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/applelap.png">
-                <div class="caption">Apple Laplacian Stack</div>
-            </div>
-        </div>
-
-        <p style="text-align: center; font-weight: bold; margin-top: 40px;">Laplacian Pyramid Blending Figure (Figure 3.42)</p>
-        <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/lappyr0.png">
-            </div>
-        </div>
-        <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/lappyr2.png">
-            </div>
-        </div>
-        <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/lappyr4.png">
-            </div>
-        </div>
-        <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/lappyrfinal.png">
+                <img src="./media/fmatch.png">
+                <div class="caption">Matching Features Between Image Pairs</div>
             </div>
         </div>
 
         <hr />
 
-         <h2>Part 2.4: Multiresolution Blending (a.k.a. the Oraple)</h2>
+         <h2>Part B.4: RANSAC for Robust Homography</h2>
 
          <p style="text-align: left;">
-            In this part, I similary created Gaussian and Laplacian stacks for all my images, and I created a Laplacian pyramid blending figure with the resulting yoda pointing to a star portal image.
-            I created the Guassian and Laplacian stacks as described above in the 2.3 section.
-
-            Specifically for the yoda pointing to star portal image, I used an irregular circular mask to depict the portal. For this, I had to pad the circular mask image with zeros to match the overall yoda image size. 
-            I also rescaled the circle to be smaller for the portal to make it seem as though yoda was pointing at it.
-            To create the Laplacian pyramid blending figure, I iterated through all levels of both the baby yoda and stars Laplacian stacks.
-            In each iteration, I used image blending with a mask to get the current level's blended image. I utilized the formula I = m * I_stars + (1-m) * I_yoda, where m is the mask, in order to do this.
-            Then I displayed these blended images as well as the masked yoda and stars images for levels 0, 2, and 4.
-            In the final row, I displayed the final blended yoda pointing at star portal image as well as the final layer masked yoda and stars images.
+            In this part, I utilized RANSAC to filter out the outlier feature matches present in the previous image (B.3).
+            First, I retrieved the feature pairs using the feature matching function I wrote in the previous part (B.3).
+            Then I implemented a RANSAC loop with 1000 iterations.
+            In each iteration of this loop, I retrieved 4 random feature pairs, computed the homograph utilizing these pairs and found the inliers by calculating the distance between the points in the second image compared to the first image multiplied by the homography. 
+            I kept track of the largest set of inliers in this loop and lastly recomputed the least squares H estimate from these inliers.
+            Utilizing this final homography H, I generated the mosaics for all three images below.
         </p>
 
         <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/oraple.png" style="width: 30%;">
-                <div class="caption">Oraple</div>
+            <div class="container">
+                <img src="./media/room_mosaic.png">
+                <div class="caption">Room Mosaic Manual Stitching - Part A</div>
+            </div>
+            <div class="container">
+                <img src="./media/room_mosaic_ransac.png">
+                <div class="caption">Room Mosaic Automatically Stitching - Part B</div>
             </div>
         </div>
 
         <div class="row">
             <div class="container">
-                <img src="./media/nycday.png" style="height: 150px;">
-                <div class="caption">NYC Skyline Day</div>
+                <img src="./media/couch_mosaic.png">
+                <div class="caption">Couch Mosaic Manual Stitching - Part A</div>
             </div>
             <div class="container">
-                <img src="./media/nycsunset.png" style="height: 150px;">
-                <div class="caption">NYC Skyline Sunset</div>
+                <img src="./media/couch_mosaic_ransac.png">
+                <div class="caption">Couch Mosaic Automatically Stitching - Part B</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/scenery_mosaic.png">
+                <div class="caption">Scenery Mosaic Manual Stitching - Part A</div>
             </div>
             <div class="container">
-                <img src="./media/nycblend.png" style="height: 150px;">
-                <div class="caption">NYC Skyline Day & Sunset Blend</div>
+                <img src="./media/scenery_mosaic_ransac.png">
+                <div class="caption">Scenery Mosaic Automatically Stitching - Part B</div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="container" style="margin-right: 20px">
-                <img src="./media/ogyoda.png" style="height: 150px;">
-                <div class="caption">Original Baby Yoda Image</div>
-            </div>
-            <div class="container" style="margin-left: 20px">
-                <img src="./media/ogstars.png" style="height: 150px;">
-                <div class="caption">Original Stars Image</div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="container" style="margin-right: 20px">
-                <img src="./media/circularmask.png" style="height: 150px;">
-                <div class="caption">Circular Mask</div>
-            </div>
-            <div class="container" style="margin-left: 20px">
-                <img src="./media/yodastars.png" style="height: 150px;">
-                <div class="caption">Baby Yoda Pointing to Star Portal (Final Image)</div>
-            </div>
-        </div>
-
-        <p style="text-align: center; font-weight: bold; margin-top: 40px;">Laplacian Pyramid Blending Figure</p>
-        <div class="row">
-            <div class="stack-image-container">
-                <img src="./media/lapblendfig.png">
-            </div>
-        </div>
+        <p style="text-align: left;">
+            <strong>Comparison Between Manually and Automatically Stitching</strong>
+            <br>
+            FIX BELOW
+            The warped images generated using bilinear interpolation are slightly smoother than the warped images generated using nearest neighbor interpolation. 
+            Specifically, for the TV images, the border around the TV is smoother in the bilinear interpolated image, especially on the right edge.
+            This can similarly be seen on the borders of the valkyries jersey towel. 
+            Although the difference is very subtle, it is still there.
+        </p>
 
         <hr />
 
@@ -680,6 +533,6 @@
             This project has made me appreciate these tools and libraries that efficiently optimize this process so much more, and I am now eager to understand the inner workings of additional imaging techniques. 
         </p>
 
-    </div> -->
+    </div>
 </body>
 </html>
