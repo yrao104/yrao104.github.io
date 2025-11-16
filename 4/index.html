@@ -89,26 +89,10 @@
 
     <div class="info">
 
-        <h2>Part 0.1: Calibrating Your Camera</h2>
-
         <p style="text-align: left;">
-            In this part, I XYZ FINISH
-        </p>
-
-        <hr />
-
-        <h2>Part 0.2: Capturing a 3D Object Scan</h2>
-
-        <p style="text-align: left;">
-            In this part, I XYZ FINISH
-        </p>
-
-        <hr />
-
-        <h2>Part 0.3: Estimating Camera Pose</h2>
-
-        <p style="text-align: left;">
-            In this part, I XYZ FINISH
+            In this part, I first took pictures of the ArUco tags to calibrate my camera.
+            Then, I took pictures of an object with a singular ArUco tag and solved the classic PnP problem to generate the camera poses.
+            Lastly, I undistorted the images and put everything in the format of a dataset to train in part 2.6.
         </p>
 
         <div class="row">
@@ -121,14 +105,6 @@
                 <div class="caption">Viser Visualization 2</div>
             </div>
         </div>
-
-        <hr />
-
-        <h2>Part 0.4: Undistorting Images and Creating a Dataset</h2>
-
-        <p style="text-align: left;">
-            In this part, I XYZ FINISH
-        </p>
   
     </div>
 
@@ -137,14 +113,17 @@
     <div class="info">
 
         <p style="text-align: left;">
-            In this part, I XYZ FINISH
-            TALK ABOUT
-            - model architecture including number of layers, width, and learning rate. Feel free to add other details you think are important.
+            In this part, I implemented an MLP network with sinusoidal positional encoding in order to learn a neural representation of an image.
+            I also experimented with different values for the max positional encoding frequency, L, and layer width to observe how this differed.
+            For the model architecture, I followed the structure given in the problem statement (image below) for the appropriate number and specification of layers. 
+            I also trained the model using a learning rate of 1e-2.
+            I found that a width of 256 and max positional encoding frequency of L = 10 produced the most detailed image reconstructions. 
+            Lower width values result in blurrier images, whereas lower L values result in less defined edges in images.
         </p>
 
         <div class="row">
             <div class="stack-image-container">
-                <img src="./media/model.jpg" style="height: 400px; width: auto;">
+                <img src="./media/model.jpg" style="height: 200px; width: auto;">
                 <div class="caption">Model Architecture</div>
             </div>
         </div>
@@ -198,14 +177,22 @@
 
     </div>
 
-    <h2 style="margin-bottom: 50px">Part 2: Fit a Neural Radiance Field from Multi-View Images</h2>
+    <h2 style="margin-bottom: 50px; margin-top: 50px">Part 2: Fit a Neural Radiance Field from Multi-View Images</h2>
 
     <div class="info">
 
         <h2>Part 2.1: Create Rays from Cameras</h2>
 
         <p style="text-align: left;">
-            In this part, I XYZ FINISH
+            In this part, I implemented the functions transform(c2w, x_c), pixel_to_camera(K, uv, s), and pixel_to_ray(K, c2w, uv).
+            For all these functions, I ensured to maintain homogeneous coordinates and appropriately support batched coordinates using PyTorch.
+            transform(c2w, x_c) transforms a point from the camera space to the world space. 
+            I simply multiplied the homogeneous version of x_c by c2w to retrieve x_w, which is the point in the world space.
+            pixel_to_camera(K, uv, s) converts a point from the pixel coordinate system into x_c, the camera space.
+            I multiplied the inverse of K by the homogeneous vector (u, v, 1), and then scaled the result by s.
+            Lastly, pixel_to_ray(K, c2w, uv) converts a point from pixel coordinates to a ray with origin and normalized direction.
+            I utilized pixel_to_camera to retrieve x_c, and transform to retrieve x_w. 
+            Then, I calculated r_o by retrieving the translation component of c2w and r_d by subtracting r_o from x_w and then normalizing the result.
         </p>
 
         <hr />
@@ -213,7 +200,10 @@
         <h2>Part 2.2: Sampling</h2>
 
         <p style="text-align: left;">
-            In this part, I XYZ FINISH
+            In this part, I wrote the functions sample_rays(N) and sample_along_rays(rays_o, rays_d, near, far, perturb, n_samples).
+            In sample_rays(N), I sampled M images and then sampled N // M rays from each image. 
+            Using pixel_to_ray, I then calculated rays_o, rays_d and returned rays_o, rays_d, and the pixels that were sampled. 
+            In sample_along_rays(rays_o, rays_d, near, far, perturb, n_samples), I created some samples along the ray and acquired the 3D coordiantes using rays_o and rays_d. If perturb is true, I added a small perturbation to the points.
         </p>
 
         <hr />
@@ -221,7 +211,9 @@
         <h2>Part 2.3: Putting the Dataloading All Together</h2>
 
         <p style="text-align: left;">
-            In this part, I XYZ FINISH
+            In this part, I created a class RaysData to utilize as a dataloader for both NeRF training as well as visualizatoin.
+            It includes the functions sample_rays(N) and sample_along_rays(rays_o, rays_d, near, far, perturb, n_samples).
+            I then used these functions to visualize the rays and samples with cameras using Viser.
         </p>
 
         <div class="row">
@@ -236,7 +228,18 @@
         <h2>Part 2.4: Neural Radiance Field</h2>
 
         <p style="text-align: left;">
-            In this part, I XYZ FINISH
+            In this part, I created an MLP that takes in 3D world coordinates and injects the input after positional encoding into the middle of my MLP utilizing concatenation.
+            For the model architecture, I followed the structure given in the problem statement (image below).
+            I made sure to calculate the appropriate input dimensions when feeding in positional encodings and split the ending layers into density and rgb sections to generate the appropriate density and color of the 3D points.
+            In addition, I added these sequential layer variables to the init method of the model class.
+            I also created a forward method in the class where I calculated the positional encodings of the 3D world coordinates and 3D ray direction vector, and called the appropriate sequential layers to connect them to each other.
+
+            <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/modelnerf.png" style="height: 200px; width: auto;">
+                <div class="caption">Model Architecture</div>
+            </div>
+        </div>
         </p>
 
         <hr />
@@ -244,8 +247,14 @@
         <h2>Part 2.5: Volume Rendering</h2>
 
         <p style="text-align: left;">
-            In this part, I XYZ FINISH
-            INCLUDE BRIEF DESCRIPTION OF HOW YOU IMPLEMENT EACH PART
+            In this part, I first implemented the volume rendering equation given a batch of samples along a ray. 
+            Next, I implemented the training process for the NeRF model on the lego dataset.
+            I trained the model using the appropriate training images and camera poses, sampled rays for each iteration, evaluated the model, and then reconstructed the colors of the pixels using my volume rendering function. 
+            I used 1000 iterations, 10000 rays, a learning rate of 5e-4, near=2.0, and far=6.0.
+            In addition, I plotted the predicted validation images across iterations and kept track of the PSNR and MSE loss per iteration.
+            For validation, I rendered all validation images and computed the average PSNR across them.
+            Using these metrics, I plotted the training loss curve, training PSNR curve, and validation PSNR curve.
+            Lastly, I generated a GIF of the spherical rendering of all of the Lego scene by rendering views from camera poses around the object.
         </p>
 
         <div class="row">
@@ -286,11 +295,53 @@
         
         <hr />
 
-        <h2>Part 2.4: Neural Radiance Field</h2>
+        <h2>Part 2.6: Training with Your Own Data</h2>
 
         <p style="text-align: left;">
-            In this part, I XYZ FINISH
+            In this part, I utilized the custom dataset that I generated in part 0.4. 
+            Using the same NeRF training pipeline from part 2.5, I trained a model on my own images using 3000 iterations, 10000 rays, a learning rate of 5e-4, near=0.05, and far=0.8.
+            The overall structure of the code is the same as in Part 2.5, with only modifications to the hyperparameters and dataset.
+            Finally, I generated a GIF of the spherical rendering of my entire Yoda scene by rendering views from camera poses around the object.
         </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/yoda1.png">
+            </div>
+            <div class="container">
+                <img src="./media/yoda2.png">
+            </div>
+            <div class="container">
+                <img src="./media/yoda3.png">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/yoda4.png">
+            </div>
+            <div class="container">
+                <img src="./media/yoda5.png">
+            </div>
+            <div class="container">
+                <img src="./media/yoda6.png">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/yodapsnr.png">
+            </div>
+            <div class="container">
+                <img src="./media/yodaloss.png">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/yodavideo.gif" style="height: 400px; width: auto;">
+            </div>
+        </div>
   
     </div>
     
