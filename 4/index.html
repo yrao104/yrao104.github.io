@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CS 180 Project 3</title>
+    <style>
+        body {
+            font-family: Georgia, sans-serif;
+            margin: 20px;
+            text-align: center;
+            background: radial-gradient(circle,rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            margin-top: 60px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            margin-top: 0px;
+        }
+
+        .info {
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;
+            border-radius: 8px;
+            text-align: left;
+            background: #e6e0f5;
+            padding: 50px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 50%;
+        }
+
+        .solo-row .container {
+            max-width: 60%;
+        }
+
+        .container img {
+            height: 300px;
+            width: auto;
+        }
+
+        hr {
+            margin-top: 40px;
+            margin-bottom: 40px; 
+        }
+
+        .caption {
+            font-size: 15px;
+            margin-top: 5px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            margin-right: 15px;
+            margin-left: 15px;
+        }
+
+        .stack-image-container {
+            width: 100%;
+            text-align: center;
+        }
+
+        .stack-image-container img {
+            width: 90%;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Project #4: Neural Radiance Field!</h1>
+
+    <h2 style="margin-bottom: 50px">Part 0: Calibrating Your Camera and Capturing a 3D Scan</h2>
+
+    <div class="info">
+
+        <h2>Part 0.1: Calibrating Your Camera</h2>
+
+        <p style="text-align: left;">
+            In this part, I XYZ FINISH
+        </p>
+
+        <hr />
+
+        <h2>Part 0.2: Capturing a 3D Object Scan</h2>
+
+        <p style="text-align: left;">
+            In this part, I XYZ FINISH
+        </p>
+
+        <hr />
+
+        <h2>Part 0.3: Estimating Camera Pose</h2>
+
+        <p style="text-align: left;">
+            In this part, I XYZ FINISH
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/viser1.png">
+                <div class="caption">Viser Visualization 1</div>
+            </div>
+            <div class="container">
+                <img src="./media/viser2.png">
+                <div class="caption">Viser Visualization 2</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 0.4: Undistorting Images and Creating a Dataset</h2>
+
+        <p style="text-align: left;">
+            In this part, I XYZ FINISH
+        </p>
+  
+    </div>
+
+    <h2 style="margin-bottom: 50px; margin-top: 50px">Part 1: Fit a Neural Field to a 2D Image</h2>
+
+    <div class="info">
+
+        <p style="text-align: left;">
+            In this part, I XYZ FINISH
+            TALK ABOUT
+            - model architecture including number of layers, width, and learning rate. Feel free to add other details you think are important.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/model.jpg" style="height: 400px; width: auto;">
+                <div class="caption">Model Architecture</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/fox1.png" style="height: 200px; width: auto;">
+                <div class="caption">Iteration 50</div>
+            </div>
+            <div class="container">
+                <img src="./media/fox2.png" style="height: 200px; width: auto;">
+                <div class="caption">Iteration 500</div>
+            </div>
+             <div class="container">
+                <img src="./media/fox3.png" style="height: 200px; width: auto;">
+                <div class="caption">Iteration 1000</div>
+            </div>
+            <div class="container">
+                <img src="./media/fox4.png" style="height: 200px; width: auto;">
+                <div class="caption">Iteration 2000</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/f416.png">
+                <div class="caption">L = 4, Width = 16</div>
+            </div>
+            <div class="container">
+                <img src="./media/f4256.png">
+                <div class="caption">L = 4, Width = 256</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/f1016.png">
+                <div class="caption">L = 10, Width = 16</div>
+            </div>
+            <div class="container">
+                <img src="./media/f10256.png">
+                <div class="caption">L = 10, Width = 256</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/psnr.png" style="height: 400px; width: auto;">
+            </div>
+        </div>
+
+    </div>
+
+    <h2 style="margin-bottom: 50px">Part 2: Fit a Neural Radiance Field from Multi-View Images</h2>
+
+    <div class="info">
+
+        <h2>Part 2.1: Create Rays from Cameras</h2>
+
+        <p style="text-align: left;">
+            In this part, I XYZ FINISH
+        </p>
+
+        <hr />
+
+        <h2>Part 2.2: Sampling</h2>
+
+        <p style="text-align: left;">
+            In this part, I XYZ FINISH
+        </p>
+
+        <hr />
+
+        <h2>Part 2.3: Putting the Dataloading All Together</h2>
+
+        <p style="text-align: left;">
+            In this part, I XYZ FINISH
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/raysandsamples.png" style="height: 400px; width: auto;">
+                <div class="caption">Rays and Samples with Cameras</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 2.4: Neural Radiance Field</h2>
+
+        <p style="text-align: left;">
+            In this part, I XYZ FINISH
+        </p>
+
+        <hr />
+
+        <h2>Part 2.5: Volume Rendering</h2>
+
+        <p style="text-align: left;">
+            In this part, I XYZ FINISH
+            INCLUDE BRIEF DESCRIPTION OF HOW YOU IMPLEMENT EACH PART
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/lego1.png">
+            </div>
+            <div class="container">
+                <img src="./media/lego2.png">
+            </div>
+            <div class="container">
+                <img src="./media/lego3.png">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/lego4.png">
+            </div>
+            <div class="container">
+                <img src="./media/lego5.png">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/trainingpsnr.png">
+            </div>
+            <div class="container">
+                <img src="./media/validationpsnr.png">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/legovideo.gif" style="height: 400px; width: auto;">
+            </div>
+        </div>
+        
+        <hr />
+
+        <h2>Part 2.4: Neural Radiance Field</h2>
+
+        <p style="text-align: left;">
+            In this part, I XYZ FINISH
+        </p>
+  
+    </div>
+    
+</body>
+</html>
