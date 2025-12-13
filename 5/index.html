@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CS 180 Project 5</title>
+    <style>
+        body {
+            font-family: Georgia, sans-serif;
+            margin: 20px;
+            text-align: center;
+            background: radial-gradient(circle,rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            margin-top: 60px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            margin-top: 0px;
+        }
+
+        .info {
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;
+            border-radius: 8px;
+            text-align: left;
+            background: #e6e0f5;
+            padding: 50px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 50%;
+        }
+
+        .solo-row .container {
+            max-width: 60%;
+        }
+
+        .container img {
+            height: 300px;
+            width: auto;
+        }
+
+        hr {
+            margin-top: 40px;
+            margin-bottom: 40px; 
+        }
+
+        .caption {
+            font-size: 15px;
+            margin-top: 5px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            margin-right: 15px;
+            margin-left: 15px;
+        }
+
+        .stack-image-container {
+            width: 100%;
+            text-align: center;
+        }
+
+        .stack-image-container img {
+            width: 90%;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Project #5: Fun With Diffusion Models!</h1>
+
+    <h2 style="margin-bottom: 50px">Part A: The Power of Diffusion Models</h2>
+
+    <div class="info">
+
+        <h2>Part 0: Setup</h2>
+
+        <p style="text-align: left;">
+            In this part, I created my own text prompts to generate the corresponding prompt embeddings.
+            Using these embeddings, I choose 3 of the prompts to generate images with the DeepFloyd model.
+            I used a random seed of 180 and generated images using num_inference_step values of 20 and 120.
+            Overall, the generated images matched the prompt text well.
+            Increasing num_inference_steps from 20 to 120 significantly improved image quality with much more fine detail present in the images as shown below. 
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part01.png">
+                <div class="caption">"a photo of a family of ducks", num_inference_steps=20</div>
+            </div>
+            <div class="container">
+                <img src="./media/part02.png">
+                <div class="caption">"sunset over a forest", num_inference_steps=20</div>
+            </div>
+            <div class="container">
+                <img src="./media/part03.png">
+                <div class="caption">"an oil painting of snow on a beach", num_inference_steps=20</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part04.png">
+                <div class="caption">"a photo of a family of ducks", num_inference_steps=120</div>
+            </div>
+            <div class="container">
+                <img src="./media/part05.png">
+                <div class="caption">"sunset over a forest", num_inference_steps=120</div>
+            </div>
+            <div class="container">
+                <img src="./media/part06.png">
+                <div class="caption">"an oil painting of snow on a beach", num_inference_steps=120</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h1>Part 1: Sampling Loops</h1>
+
+        <h2>Part 1.1: Implementing the Forward Process</h2>
+
+        <p style="text-align: left;">
+             In this part, I implemented the forward(im, t) function to add Gaussian noise to the given image using torch.randn_like.
+             Below is the test image of the Campanile at noise levels 250, 500, and 750.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.11.png" style="height: 200px; width: auto;">
+                <div class="caption">Berkeley Campanile</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.12.png" style="height: 200px; width: auto;">
+                <div class="caption">Noisy Campanile @ t=250</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.13.png" style="height: 200px; width: auto;">
+                <div class="caption">Noisy Campanile @ t=500</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.14.png" style="height: 200px; width: auto;">
+                <div class="caption">Noisy Campanile @ t=750</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.2: Classical Denoising</h2>
+
+        <p style="text-align: left;">
+            In this part, I used Gaussian blur filtering to denoise the given noisy images.
+            Below are the images from the previous part with the Gaussian-denoised images below.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.12.png">
+                <div class="caption">Noisy Campanile @ t=250</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.13.png">
+                <div class="caption">Noisy Campanile @ t=500</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.14.png">
+                <div class="caption">Noisy Campanile @ t=750</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.21.png">
+                <div class="caption">Gaussian Denoising @ t=250</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.22.png">
+                <div class="caption">Gaussian Denoising @ t=500</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.23.png">
+                <div class="caption">Gaussian Denoising @ t=750</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.3: One-Step Denoising</h2>
+
+        <p style="text-align: left;">
+            In this part, I denoised images using a pretrained diffusion model instead.
+            The model retrieves the Gaussian noise present in the image and then removes it to get the original image.
+            Below are the images from part 1.1 with the diffusion model denoised images below. 
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.12.png">
+                <div class="caption">Noisy Campanile @ t=250</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.13.png">
+                <div class="caption">Noisy Campanile @ t=500</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.14.png">
+                <div class="caption">Noisy Campanile @ t=750</div>
+            </div>
+        </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.31.png">
+                <div class="caption">One-Step Denoised Campanile @ t=250</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.32.png">
+                <div class="caption">One-Step Denoised Campanile @ t=500</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.33.png">
+                <div class="caption">One-Step Denoised Campanile @ t=750</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.4: Iterative Denoising</h2>
+
+        <p style="text-align: left;">
+            In this part, I used the equations present in the Denoising Diffusion Probabilistic Models paper to iteratively denoise an image starting at i_start across strided timesteps.
+            Below is the noisy image every 5th denoising loop as well as the comparisons between the original, iterative denoising, one-step denoising, and Gaussian blurred images.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.41.png" style="height: 150px; width: auto;">
+                <div class="caption">Noisy Campanile @ t=90</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.42.png" style="height: 150px; width: auto;">
+                <div class="caption">Noisy Campanile @ t=240</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.43.png" style="height: 150px; width: auto;">
+                <div class="caption">Noisy Campanile @ t=390</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.44.png" style="height: 150px; width: auto;">
+                <div class="caption">Noisy Campanile @ t=540</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.45.png" style="height: 150px; width: auto;">
+                <div class="caption">Noisy Campanile @ t=690</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.46.png" style="height: 200px; width: auto;">
+                <div class="caption">Original</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.47.png" style="height: 200px; width: auto;">
+                <div class="caption">Iteratively Denoised Campanile</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.48.png" style="height: 200px; width: auto;">
+                <div class="caption">One-Step Denoised Campanile</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.49.png" style="height: 200px; width: auto;">
+                <div class="caption">Gaussian Blurred Campanile</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.5: Diffusion Model Sampling</h2>
+
+        <p style="text-align: left;">
+            In this part, I sampled 5 images from the diffusion model with i_start=0 and random noise.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.51.png" style="height: 150px; width: auto;">
+                <div class="caption">Sample 1</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.52.png" style="height: 150px; width: auto;">
+                <div class="caption">Sample 2</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.53.png" style="height: 150px; width: auto;">
+                <div class="caption">Sample 3</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.54.png" style="height: 150px; width: auto;">
+                <div class="caption">Sample 4</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.55.png" style="height: 150px; width: auto;">
+                <div class="caption">Sample 5</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.6: Classifier-Free Guidance (CFG)</h2>
+
+        <p style="text-align: left;">
+            In this part, I implemented the iterative_denoise_cfg function similar to the iterative_denoise function but with classifier-free guidance.
+            To do this, I used the stage_1.unet function twice to get the conditional noise estimate as well as the unconditional noise estimate to then use for the calculation of the new noise estimate.
+            Then, I sampled 5 images from the diffusion model using this iterative_denoise_cfg function.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.61.png" style="height: 150px; width: auto;">
+                <div class="caption">Sample 1 w/ CFG</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.62.png" style="height: 150px; width: auto;">
+                <div class="caption">Sample 2 w/ CFG</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.63.png" style="height: 150px; width: auto;">
+                <div class="caption">Sample 3 w/ CFG</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.64.png" style="height: 150px; width: auto;">
+                <div class="caption">Sample 4 w/ CFG</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.65.png" style="height: 150px; width: auto;">
+                <div class="caption">Sample 5 w/ CFG</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.7: Image-to-image Translation</h2>
+
+        <p style="text-align: left;">
+            In this part, I ran the forward function to get a noisy image and then called iterative_denoise_cfg with steps [1, 3, 5, 7, 10, 20] to slowly apply "edits" to the original image.
+            We can see below that as the steps increase, the output starts to look more like the original image.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.71.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=1</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.72.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=3</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.73.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=5</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.74.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=7</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.75.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=10</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.76.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=20</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.77.png" style="height: 100px; width: auto;">
+                <div class="caption">Campanile (Original)</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.78.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=1</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.79.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=3</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.710.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=5</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.711.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=7</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.712.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=10</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.713.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=20</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.714.png" style="height: 100px; width: auto;">
+                <div class="caption">Plane View (Original)</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.715.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=1</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.716.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=3</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.717.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=5</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.718.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=7</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.719.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=10</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.720.png" style="height: 100px; width: auto;">
+                <div class="caption">SDEdit w/ i_start=20</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.721.png" style="height: 100px; width: auto;">
+                <div class="caption">Garden (Original)</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.7.1: Editing Hand-Drawn and Web Images</h2>
+
+        <p style="text-align: left;">
+            In this part, I ran the same method as the previous section with steps [1, 3, 5, 7, 10, 20] to slowly apply "edits" to the original image.
+            This time, I used images that I drew as well as web images to project them onto the natural image manifold, leveraging the diffusion model.
+            Once again, we can see below that as the steps increase, the output starts to look more like the original image and more realistic.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.7.11.png style="height: 100px; width: auto;">
+                <div class="caption">Lion at i_start=1</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.12.png" style="height: 100px; width: auto;">
+                <div class="caption">Lion at i_start=3</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.13.png" style="height: 100px; width: auto;">
+                <div class="caption">Lion at i_start=5</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.14.png" style="height: 100px; width: auto;">
+                <div class="caption">Lion at i_start=7</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.15.png" style="height: 100px; width: auto;">
+                <div class="caption">Lion at i_start=10</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.16.png" style="height: 100px; width: auto;">
+                <div class="caption">Lion at i_start=20</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.17.png" style="height: 100px; width: auto;">
+                <div class="caption">Lion (Original)</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.7.18.png" style="height: 100px; width: auto;">
+                <div class="caption">Flower at i_start=1</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.19.png" style="height: 100px; width: auto;">
+                <div class="caption">Flower at i_start=3</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.110.png" style="height: 100px; width: auto;">
+                <div class="caption">Flower at i_start=5</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.111.png" style="height: 100px; width: auto;">
+                <div class="caption">Flower at i_start=7</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.112.png" style="height: 100px; width: auto;">
+                <div class="caption">Flower at i_start=10</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.113.png" style="height: 100px; width: auto;">
+                <div class="caption">Flower at i_start=20</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.114.png" style="height: 100px; width: auto;">
+                <div class="caption">Flower (Original)</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.7.115.png" style="height: 100px; width: auto;">
+                <div class="caption">Tree at i_start=1</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.116.png" style="height: 100px; width: auto;">
+                <div class="caption">Tree at i_start=3</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.117.png" style="height: 100px; width: auto;">
+                <div class="caption">Tree at i_start=5</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.118.png" style="height: 100px; width: auto;">
+                <div class="caption">Tree at i_start=7</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.119.png" style="height: 100px; width: auto;">
+                <div class="caption">Tree at i_start=10</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.120.png" style="height: 100px; width: auto;">
+                <div class="caption">Tree at i_start=20</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.121.png" style="height: 100px; width: auto;">
+                <div class="caption">Tree (Original)</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.7.2: Inpainting</h2>
+
+        <p style="text-align: left;">
+            In this part, I followed the same procedure as the previous iterative_denoise_cfg function, but I incorporated a binary mask to only generate new content where the mask=1 and keep the same content where the mask=0.
+            I used the update step for x_t from the RePaint paper to implement this mask modification at each denoising step.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.7.21.png" style="height: 200px; width: auto;">
+                <div class="caption">Campanile</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.22.png" style="height: 200px; width: auto;">
+                <div class="caption">Mask</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.23.png" style="height: 200px; width: auto;">
+                <div class="caption">Hole to Fill</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.24.png" style="height: 200px; width: auto;">
+                <div class="caption">Campanile Inpainted</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.7.25.png" style="height: 200px; width: auto;">
+                <div class="caption">Plane View</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.26.png" style="height: 200px; width: auto;">
+                <div class="caption">Mask</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.27.png" style="height: 200px; width: auto;">
+                <div class="caption">Hole to Fill</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.28.png" style="height: 200px; width: auto;">
+                <div class="caption">Plane View Inpainted</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.7.29.png" style="height: 200px; width: auto;">
+                <div class="caption">Garden</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.210.png" style="height: 200px; width: auto;">
+                <div class="caption">Mask</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.211.png" style="height: 200px; width: auto;">
+                <div class="caption">Hole to Fill</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.212.png" style="height: 200px; width: auto;">
+                <div class="caption">Garden Inpainted</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.7.3: Text-Conditional Image-to-image Translation</h2>
+
+        <p style="text-align: left;">
+            In this part, I changed the prompt to be "a photo of a family of ducks" rather than "a high quality photo".
+            As the noise levels increase, the output starts to look more like the text prompt as well as the original image.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.7.31.png" style="height: 100px; width: auto;">
+                <div class="caption">Campanile @ noise level 1</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.32.png" style="height: 100px; width: auto;">
+                <div class="caption">Campanile @ noise level 3</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.33.png" style="height: 100px; width: auto;">
+                <div class="caption">Campanile @ noise level 5</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.34.png" style="height: 100px; width: auto;">
+                <div class="caption">Campanile @ noise level 7</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.35.png" style="height: 100px; width: auto;">
+                <div class="caption">Campanile @ noise level 10</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.36.png" style="height: 100px; width: auto;">
+                <div class="caption">Campanile @ noise level 20</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.21.png" style="height: 100px; width: auto;">
+                <div class="caption">Campanile</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.7.37.png" style="height: 100px; width: auto;">
+                <div class="caption">Plane View @ noise level 1</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.38.png" style="height: 100px; width: auto;">
+                <div class="caption">Plane View @ noise level 3</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.39.png" style="height: 100px; width: auto;">
+                <div class="caption">Plane View @ noise level 5</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.310.png" style="height: 100px; width: auto;">
+                <div class="caption">Plane View @ noise level 7</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.311.png" style="height: 100px; width: auto;">
+                <div class="caption">Plane View @ noise level 10</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.312.png" style="height: 100px; width: auto;">
+                <div class="caption">Plane View @ noise level 20</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.25.png" style="height: 100px; width: auto;">
+                <div class="caption">Plane View</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.7.313.png" style="height: 100px; width: auto;">
+                <div class="caption">Garden @ noise level 1</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.314.png" style="height: 100px; width: auto;">
+                <div class="caption">Garden @ noise level 3</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.315.png" style="height: 100px; width: auto;">
+                <div class="caption">Garden @ noise level 5</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.316.png" style="height: 100px; width: auto;">
+                <div class="caption">Garden @ noise level 7</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.317.png" style="height: 100px; width: auto;">
+                <div class="caption">Garden @ noise level 10</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.7.318.png" style="height: 100px; width: auto;">
+                <div class="caption">Garden @ noise level 20</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.7.29.png" style="height: 100px; width: auto;">
+                <div class="caption">Garden</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.8: Visual Anagrams</h2>
+
+        <p style="text-align: left;">
+            In this part, I used two prompts and denoised the image with the first prompt to get the first noise estimate.
+            Next, I flipped the image upside down and denoised it with the second prompt to get the second noise estimate.
+            Then, I flipped the second noise estimate back and combined both these estimates by taking the average of them.
+            Lastly, I used this averaged noise estimate for a reverse diffusion step to generate the visual anagram images below.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.81.png">
+                <div class="caption">"An oil painting of snow on a beach"</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.82.png">
+                <div class="caption">"An oil painting of a busy city street"</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.83.png">
+                <div class="caption">"A photo of a family of ducks"</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.84.png">
+                <div class="caption">"Dolphins jumping out of the water"</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.9: Hybrid Images</h2>
+
+        <p style="text-align: left;">
+            In this part, I used two prompts again and denoised the image with the first prompt to get the first noise estimate.
+            Similarly, I denoised the image with the second prompt to get the second noise estimate.
+            Then, I put the first noise estimate through a low pass function and the second noise estimate through a high pass function to add them and get the final noise estimate.
+            Lastly, I used this final noise estimate for a reverse diffusion step to generate the hybrid images below.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/part1.91.png" style="height: 400px; width: auto;">
+                <div class="caption">Hybrid image of "sunset over a forest" and "an oil painting of a busy city street"</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/part1.92.png" style="height: 400px; width: auto;">
+                <div class="caption">Hybrid image of "an oil painting of snow on a beach" and "dolphins jumping out of the water"</div>
+            </div>
+        </div>
+  
+    </div>
+
+
+
+    <!-- <h2 style="margin-bottom: 50px; margin-top: 50px">Part B: Feature Matching for Autostitching</h2>
+
+    <div class="info">
+
+        <h2>Part B.1: Harris Corner Detection</h2>
+
+        <p style="text-align: left;">
+            In this part, utilized the starter code with the get_harris_corners and dist2 functions to first get the Harris corners and plot them without ANMS.
+            Next, I utilized Adaptive Non-Maximal Supression, or ANMS, by getting the Harris corners, calculating the corner strength function, and looping through all corners to calculate the minimum suppression radius.
+            I utilized a mask to filter out points that were not robust based on the corner strength function.
+            Next, I calculated the suppression radius per point and finally retrieved the top 500 coordinates with the largest suppression radii. 
+            Utilizing ANMS ensured that the chosen coordinates were better distributed across the image rather than grouped in certian areas.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/harris.png">
+                <div class="caption">Harris Corners</div>
+            </div>
+            <div class="container">
+                <img src="./media/harris_anms.png">
+                <div class="caption">Harris Corners with ANMS</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part B.2: Feature Descriptor Extraction</h2>
+
+        <p style="text-align: left;">
+            In this part, I extracted the features of the image.
+            First, I retrieved the ANMS corners using the previous part (B.1). 
+            Then, I downsampled the image by blurring it using a Gaussian filter.
+            After, I looped through all of the ANMS corners and sampled patches from 40x40 windows around the corners.
+            I exxtraced axis-aligned 8x8 patches from these windows and used bias/gain normalization for the visualizations to be in the [0, 1] range.
+            Lastly, I flattened these normalized patches to convert them to feature descriptor vectors.
+            Below are 16 of these feature descriptor vectors.
+        </p>
+
+         <div class="row">
+            <div class="container">
+                <img src="./media/f1.png" style="height: 200px; width: auto;">
+            </div>
+            <div class="container">
+                <img src="./media/f2.png" style="height: 200px; width: auto;">
+            </div>
+             <div class="container">
+                <img src="./media/f3.png" style="height: 200px; width: auto;">
+            </div>
+            <div class="container">
+                <img src="./media/f4.png" style="height: 200px; width: auto;">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/f5.png" style="height: 200px; width: auto;">
+            </div>
+            <div class="container">
+                <img src="./media/f6.png" style="height: 200px; width: auto;">
+            </div>
+             <div class="container">
+                <img src="./media/f7.png" style="height: 200px; width: auto;">
+            </div>
+            <div class="container">
+                <img src="./media/f8.png" style="height: 200px; width: auto;">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/f9.png" style="height: 200px; width: auto;">
+            </div>
+            <div class="container">
+                <img src="./media/f10.png" style="height: 200px; width: auto;">
+            </div>
+             <div class="container">
+                <img src="./media/f11.png" style="height: 200px; width: auto;">
+            </div>
+            <div class="container">
+                <img src="./media/f12.png" style="height: 200px; width: auto;">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/f13.png" style="height: 200px; width: auto;">
+            </div>
+            <div class="container">
+                <img src="./media/f14.png" style="height: 200px; width: auto;">
+            </div>
+             <div class="container">
+                <img src="./media/f15.png" style="height: 200px; width: auto;">
+            </div>
+            <div class="container">
+                <img src="./media/f16.png" style="height: 200px; width: auto;">
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part B.3: Feature Matching</h2>
+
+        <p style="text-align: left;">
+            In this part, I matched features across 2 images. 
+            First, I retrieved the feature descriptor vectors for both images using the previous part (B.2). 
+            Next, I calculated an array of the difference in distances between both feature descriptor vectors by utilizing the provided dist2 function.
+            Next, I looped through these distance differences and retrieved the error for the nearest neighbor and error for the second nearest neighbor by sorting these distances for each index.
+            Utilizing this, I applied Lowe's technique with a threshold value of 0.5 to identify which matches were best.
+            With this technique, I was able to identify the best matching features. Utilizing Lowe's technique, I was able to retrieve 25 matching features as shown below.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/fmatch.png" style="height: 400px; width: auto;">
+                <div class="caption">Matching Features Between Image Pairs</div>
+            </div>
+        </div>
+
+        <hr />
+
+         <h2>Part B.4: RANSAC for Robust Homography</h2>
+
+         <p style="text-align: left;">
+            In this part, I utilized RANSAC to filter out the outlier feature matches present in the previous image (B.3).
+            First, I retrieved the feature pairs using the feature matching function I wrote in the previous part (B.3).
+            Then I implemented a RANSAC loop with 1000 iterations.
+            In each iteration of this loop, I retrieved 4 random feature pairs, computed the homograph utilizing these pairs and found the inliers by calculating the distance between the points in the second image compared to the first image multiplied by the homography. 
+            I kept track of the largest set of inliers in this loop and lastly recomputed the least squares H estimate from these inliers.
+            Utilizing this final homography H, I generated the mosaics for all three images below.
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/room_mosaic.png">
+                <div class="caption">Room Mosaic Manual Stitching - Part A</div>
+            </div>
+            <div class="container">
+                <img src="./media/room_mosaic_ransac.png">
+                <div class="caption">Room Mosaic Automatically Stitching - Part B</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/couch_mosaic.png">
+                <div class="caption">Couch Mosaic Manual Stitching - Part A</div>
+            </div>
+            <div class="container">
+                <img src="./media/couch_mosaic_ransac.png">
+                <div class="caption">Couch Mosaic Automatically Stitching - Part B</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/scenery_mosaic.png">
+                <div class="caption">Scenery Mosaic Manual Stitching - Part A</div>
+            </div>
+            <div class="container">
+                <img src="./media/scenery_mosaic_ransac.png">
+                <div class="caption">Scenery Mosaic Automatically Stitching - Part B</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            <strong>Comparison Between Manually and Automatically Stitching</strong>
+            <br>
+            The automatically stitched mosaics seem to be slightly clearer near the seam areas. 
+            If you zoom in or look closely when comparing the manual and automatic stitching, the automatic stitching has clearer pixels along these seams due to feature matching.
+            This makes sense because I manually selected the points in part A, which would result in more error in comparison to corner identification with Harris and ANMS. 
+            Since there is less room for error with a coded algorithm, it makes sense that automatic stitching would have better alignment.
+        </p>
+
+        <hr />
+
+    </div>
+
+    <h2 style="margin-bottom: 50px; margin-top: 50px">Conclusion</h2>
+    <div class="info">
+        <p style="text-align: left;">
+            The most important thing I learned from this project was how intricate the process of image blending and image editing truly is.
+            Overall, the process seems so much simpler when utilizing user interfaces to automatically generate these images for you, but the mathematical equations behind these edits are so complex.
+            This project has made me appreciate these tools and libraries that efficiently optimize this process so much more, and I am now eager to understand the inner workings of additional imaging techniques. 
+        </p>
+    </div>
+-->
+    
+</body>
+</html>
