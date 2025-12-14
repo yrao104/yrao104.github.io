@@ -783,194 +783,560 @@
   
     </div>
 
-
-
-    <!-- <h2 style="margin-bottom: 50px; margin-top: 50px">Part B: Feature Matching for Autostitching</h2>
+    <h2 style="margin-bottom: 50px; margin-top: 50px">Part B: Flow Matching from Scratch</h2>
 
     <div class="info">
 
-        <h2>Part B.1: Harris Corner Detection</h2>
+        <h1>Part 1: Training a Single-Step Denoising UNet</h1>
+
+        <h2>Part 1.1: Implementing the UNet</h2>
 
         <p style="text-align: left;">
-            In this part, utilized the starter code with the get_harris_corners and dist2 functions to first get the Harris corners and plot them without ANMS.
-            Next, I utilized Adaptive Non-Maximal Supression, or ANMS, by getting the Harris corners, calculating the corner strength function, and looping through all corners to calculate the minimum suppression radius.
-            I utilized a mask to filter out points that were not robust based on the corner strength function.
-            Next, I calculated the suppression radius per point and finally retrieved the top 500 coordinates with the largest suppression radii. 
-            Utilizing ANMS ensured that the chosen coordinates were better distributed across the image rather than grouped in certian areas.
-        </p>
-
-        <div class="row">
-            <div class="container">
-                <img src="./media/harris.png">
-                <div class="caption">Harris Corners</div>
-            </div>
-            <div class="container">
-                <img src="./media/harris_anms.png">
-                <div class="caption">Harris Corners with ANMS</div>
-            </div>
-        </div>
-
-        <hr />
-
-        <h2>Part B.2: Feature Descriptor Extraction</h2>
-
-        <p style="text-align: left;">
-            In this part, I extracted the features of the image.
-            First, I retrieved the ANMS corners using the previous part (B.1). 
-            Then, I downsampled the image by blurring it using a Gaussian filter.
-            After, I looped through all of the ANMS corners and sampled patches from 40x40 windows around the corners.
-            I exxtraced axis-aligned 8x8 patches from these windows and used bias/gain normalization for the visualizations to be in the [0, 1] range.
-            Lastly, I flattened these normalized patches to convert them to feature descriptor vectors.
-            Below are 16 of these feature descriptor vectors.
-        </p>
-
-         <div class="row">
-            <div class="container">
-                <img src="./media/f1.png" style="height: 200px; width: auto;">
-            </div>
-            <div class="container">
-                <img src="./media/f2.png" style="height: 200px; width: auto;">
-            </div>
-             <div class="container">
-                <img src="./media/f3.png" style="height: 200px; width: auto;">
-            </div>
-            <div class="container">
-                <img src="./media/f4.png" style="height: 200px; width: auto;">
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="container">
-                <img src="./media/f5.png" style="height: 200px; width: auto;">
-            </div>
-            <div class="container">
-                <img src="./media/f6.png" style="height: 200px; width: auto;">
-            </div>
-             <div class="container">
-                <img src="./media/f7.png" style="height: 200px; width: auto;">
-            </div>
-            <div class="container">
-                <img src="./media/f8.png" style="height: 200px; width: auto;">
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="container">
-                <img src="./media/f9.png" style="height: 200px; width: auto;">
-            </div>
-            <div class="container">
-                <img src="./media/f10.png" style="height: 200px; width: auto;">
-            </div>
-             <div class="container">
-                <img src="./media/f11.png" style="height: 200px; width: auto;">
-            </div>
-            <div class="container">
-                <img src="./media/f12.png" style="height: 200px; width: auto;">
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="container">
-                <img src="./media/f13.png" style="height: 200px; width: auto;">
-            </div>
-            <div class="container">
-                <img src="./media/f14.png" style="height: 200px; width: auto;">
-            </div>
-             <div class="container">
-                <img src="./media/f15.png" style="height: 200px; width: auto;">
-            </div>
-            <div class="container">
-                <img src="./media/f16.png" style="height: 200px; width: auto;">
-            </div>
-        </div>
-
-        <hr />
-
-        <h2>Part B.3: Feature Matching</h2>
-
-        <p style="text-align: left;">
-            In this part, I matched features across 2 images. 
-            First, I retrieved the feature descriptor vectors for both images using the previous part (B.2). 
-            Next, I calculated an array of the difference in distances between both feature descriptor vectors by utilizing the provided dist2 function.
-            Next, I looped through these distance differences and retrieved the error for the nearest neighbor and error for the second nearest neighbor by sorting these distances for each index.
-            Utilizing this, I applied Lowe's technique with a threshold value of 0.5 to identify which matches were best.
-            With this technique, I was able to identify the best matching features. Utilizing Lowe's technique, I was able to retrieve 25 matching features as shown below.
+            In this part, I implemented the Unconditional UNet model using the model architecture in the images below.
+            As shown below, the standard UNet operations consist of Conv, DownConv, UpConv, Flatten, Unflatten, Concat, ConvBlock, DownBlock, and UpBlock.
+            This model includes both downsampling blocks as well as upsampling blocks with skip connections.
         </p>
 
         <div class="row">
             <div class="stack-image-container">
-                <img src="./media/fmatch.png" style="height: 400px; width: auto;">
-                <div class="caption">Matching Features Between Image Pairs</div>
+                <img src="./media/partb1.11.png" style="height: 400px; width: auto;">
+                <div class="caption">Unconditional UNet Architecture (from project spec)</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb1.12.png" style="height: 400px; width: auto;">
+                <div class="caption">Standard UNet Operations (from project spec)</div>
             </div>
         </div>
 
         <hr />
 
-         <h2>Part B.4: RANSAC for Robust Homography</h2>
+        <h2>Part 1.2: Using the UNet to Train a Denoiser</h2>
 
-         <p style="text-align: left;">
-            In this part, I utilized RANSAC to filter out the outlier feature matches present in the previous image (B.3).
-            First, I retrieved the feature pairs using the feature matching function I wrote in the previous part (B.3).
-            Then I implemented a RANSAC loop with 1000 iterations.
-            In each iteration of this loop, I retrieved 4 random feature pairs, computed the homograph utilizing these pairs and found the inliers by calculating the distance between the points in the second image compared to the first image multiplied by the homography. 
-            I kept track of the largest set of inliers in this loop and lastly recomputed the least squares H estimate from these inliers.
-            Utilizing this final homography H, I generated the mosaics for all three images below.
+        <p style="text-align: left;">
+            In this part, I generated a visualization of the different noising processes over different sigma values, following the equation z = x + sigma*epsilon, where epsilon is normally distributed noise.
+            We can see that as sigma increases, the image get noisier.
         </p>
 
         <div class="row">
             <div class="container">
-                <img src="./media/room_mosaic.png">
-                <div class="caption">Room Mosaic Manual Stitching - Part A</div>
+                <img src="./media/partb1.21.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.0</div>
             </div>
             <div class="container">
-                <img src="./media/room_mosaic_ransac.png">
-                <div class="caption">Room Mosaic Automatically Stitching - Part B</div>
+                <img src="./media/partb1.22.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.2</div>
+            </div>
+             <div class="container">
+                <img src="./media/partb1.23.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.4</div>
+            </div>
+            <div class="container">
+                <img src="./media/partb1.24.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.5</div>
+            </div>
+            <div class="container">
+                <img src="./media/partb1.25.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.6</div>
+            </div>
+            <div class="container">
+                <img src="./media/partb1.26.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.8</div>
+            </div>
+             <div class="container">
+                <img src="./media/partb1.27.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=1.0</div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="container">
-                <img src="./media/couch_mosaic.png">
-                <div class="caption">Couch Mosaic Manual Stitching - Part A</div>
-            </div>
-            <div class="container">
-                <img src="./media/couch_mosaic_ransac.png">
-                <div class="caption">Couch Mosaic Automatically Stitching - Part B</div>
-            </div>
-        </div>
+        <hr />
+
+        <h2>Part 1.2.1: Training</h2>
+
+        <p style="text-align: left;">
+            In this part, I trained the Unconditional UNet on the MNIST dataset for 5 epochs using sigma=0.5, a batch size of 256, a hidden dimension of 128, and the Adam optimizer with learning rate 1e-4.
+            Below is the training loss curve as well as the denoised image results after both the 1st and 5th epochs.
+        </p>
 
         <div class="row">
-            <div class="container">
-                <img src="./media/scenery_mosaic.png">
-                <div class="caption">Scenery Mosaic Manual Stitching - Part A</div>
-            </div>
-            <div class="container">
-                <img src="./media/scenery_mosaic_ransac.png">
-                <div class="caption">Scenery Mosaic Automatically Stitching - Part B</div>
+            <div class="stack-image-container">
+                <img src="./media/part1.2.119.png" style="height: 400px; width: auto;">
             </div>
         </div>
 
         <p style="text-align: left;">
-            <strong>Comparison Between Manually and Automatically Stitching</strong>
-            <br>
-            The automatically stitched mosaics seem to be slightly clearer near the seam areas. 
-            If you zoom in or look closely when comparing the manual and automatic stitching, the automatic stitching has clearer pixels along these seams due to feature matching.
-            This makes sense because I manually selected the points in part A, which would result in more error in comparison to corner identification with Harris and ANMS. 
-            Since there is less room for error with a coded algorithm, it makes sense that automatic stitching would have better alignment.
+            After Epoch 1
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.2.11.png" style="height: 100px; width: auto;">
+                <div class="caption">Input</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.12.png" style="height: 100px; width: auto;">
+                <div class="caption">Noisy (sigma=0.5)</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.2.13.png" style="height: 100px; width: auto;">
+                <div class="caption">Output</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.2.14.png" style="height: 100px; width: auto;">
+                <div class="caption">Input</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.15.png" style="height: 100px; width: auto;">
+                <div class="caption">Noisy (sigma=0.5)</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.2.16" style="height: 100px; width: auto;">
+                <div class="caption">Output</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.2.17.png style="height: 100px; width: auto;">
+                <div class="caption">Input</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.18.png" style="height: 100px; width: auto;">
+                <div class="caption">Noisy (sigma=0.5)</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.2.19.png" style="height: 100px; width: auto;">
+                <div class="caption">Output</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            After Epoch 5
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.2.110.png" style="height: 100px; width: auto;">
+                <div class="caption">Input</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.111.png" style="height: 100px; width: auto;">
+                <div class="caption">Noisy (sigma=0.5)</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.2.112" style="height: 100px; width: auto;">
+                <div class="caption">Output</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.2.113.png" style="height: 100px; width: auto;">
+                <div class="caption">Input</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.114.png" style="height: 100px; width: auto;">
+                <div class="caption">Noisy (sigma=0.5)</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.2.115.png" style="height: 100px; width: auto;">
+                <div class="caption">Output</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.2.116.png" style="height: 100px; width: auto;">
+                <div class="caption">Input</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.117.png" style="height: 100px; width: auto;">
+                <div class="caption">Noisy (sigma=0.5)</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.2.118.png" style="height: 100px; width: auto;">
+                <div class="caption">Output</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.2.2: Out-of-Distribution Testing</h2>
+
+         <p style="text-align: left;">
+            In this part, I generated a visualization of the different noising processes over different sigma values on the test set after the model was trained in the previous step.
+            We can see that the model performs pretty well on data it was not trained for, but for large sigma values, the image does get noisier.
+        </p>
+
+        <p style="text-align: left;">
+            Noisy Images
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.2.21.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.0</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.22.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.2</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.2.23.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.4</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.24.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.5</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.25.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.6</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.26.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.8</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.2.27.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=1.0</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            Denoised Images
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.2.28.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.0</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.29.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.2</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.2.210.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.4</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.211.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.5</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.212.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.6</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.213.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=0.8</div>
+            </div>
+             <div class="container">
+                <img src="./media/part1.2.214.png" style="height: 75px; width: auto;">
+                <div class="caption">sigma=1.0</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 1.2.3: Denoising Pure Noise</h2>
+
+         <p style="text-align: left;">
+            In this part, I followed the same training process as part 1.2.1, but I added pure Gaussian noise and denoised for 5 epochs.
+            Below is the training loss curve as well as the denoised image results after both the 1st and 5th epochs.
+            The generated outputs have similar blurry pattern that does not match any of the digits in the dataset.
+            We know that with MSE loss, the model is minimizing the mean squared distances, which is associated with the centroid of the image.
+            This is because denoising pure Gaussian noise results in an averaged version of this noise across all digits.
+            We can see that after epoch 5, the generated outputs are more blurry and blended comapred to the outputs after epoch 1.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/part1.2.313.png" style="height: 400px; width: auto;">
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            After Epoch 1
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.2.31.png" style="height: 100px; width: auto;">
+                <div class="caption">Pure Noise</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.32.png" style="height: 100px; width: auto;">
+                <div class="caption">Denoised Image</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.2.33.png" style="height: 100px; width: auto;">
+                <div class="caption">Pure Noise</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.34.png" style="height: 100px; width: auto;">
+                <div class="caption">Denoised Image</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part1.2.35.png" style="height: 100px; width: auto;">
+                <div class="caption">Pure Noise</div>
+            </div>
+            <div class="container">
+                <img src="./media/part1.2.36.png" style="height: 100px; width: auto;">
+                <div class="caption">Denoised Image</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            After Epoch 5
+        </p>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part.1.2.37.png" style="height: 100px; width: auto;">
+                <div class="caption">Pure Noise</div>
+            </div>
+            <div class="container">
+                <img src="./media/part.1.2.38.png" style="height: 100px; width: auto;">
+                <div class="caption">Denoised Image</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part.1.2.39.png" style="height: 100px; width: auto;">
+                <div class="caption">Pure Noise</div>
+            </div>
+            <div class="container">
+                <img src="./media/part.1.2.310.png" style="height: 100px; width: auto;">
+                <div class="caption">Denoised Image</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container">
+                <img src="./media/part.1.2.311.png" style="height: 100px; width: auto;">
+                <div class="caption">Pure Noise</div>
+            </div>
+            <div class="container">
+                <img src="./media/part.1.2.312.png" style="height: 100px; width: auto;">
+                <div class="caption">Denoised Image</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h1>Part 2: Training a Flow Matching Model</h1>
+
+        <h2>Part 2.1: Adding Time Conditioning to UNet</h2>
+
+         <p style="text-align: left;">
+            In this part, I added a time scalar to the UNet model architecture.
+            I followed the architecture in the images below, which includes new fully-conditioned blocks, or FCBlocks, that include this scalar t condition.
+            This allows the Conditioned UNet to construct intermediate noisy samples using the relative time to the clean samples. 
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.11.png" style="height: 400px; width: auto;">
+                <div class="caption">Conditioned UNet Architecture (from project spec)</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.12.png" style="height: 400px; width: auto;">
+                <div class="caption">FCBlock (from project spec)</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 2.2: Training the UNet</h2>
+
+         <p style="text-align: left;">
+            In this part, I followed Algorithm 1 below to train the time-conditioned UNet over 10 epochs.
+            This essentially repeats the process of adding uniform noise to a random clean image from the training set, and the model is trained to predict the flow from the noisy image to the clean image based on the timestep.
+            I used a batch size of 64, a hidden dimension of 64, the Adam optimizer with an initial learning rate of 1e-2, and an exponential learning rate delay scheduler with gamma 0.1**(1.0/num_epochs).
+            Below is the training loss curve over this process.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.21.png" style="height: 400px; width: auto;">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.22.png" style="height: 400px; width: auto;">
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 2.3: Sampling from the UNet</h2>
+
+         <p style="text-align: left;">
+            In this part, I follow Algorithm 2 below to sample from the time-conditioned UNet.
+            The algorithm iteratively denoises pure Gaussian noise by predicting the flow at each timestep.
+            Below are the results for epochs 1, 5, and 10.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.31.png" style="height: 400px; width: auto;">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.32.png" style="height: 400px; width: auto;">
+                <div class="caption">Epoch 1</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.33.png" style="height: 400px; width: auto;">
+                <div class="caption">Epoch 5</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.34.png" style="height: 400px; width: auto;">
+                <div class="caption">Epoch 10</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 2.4: Adding Class-Conditioning to UNet</h2>
+
+         <p style="text-align: left;">
+            In this part, I added a condition for the class of digit to the time-conditioned UNet model architecture.
+            To do this, I added 2 additional FCBlocks with one-hot vectors for the class as opposed to scalars like I did with timesteps.
+            In addition, I implemented dropout so 10% of the time the one-hot vector is set to 0.
+            This allows the Conditioned UNet to learn both the unconditional as well as conditional generations.
         </p>
 
         <hr />
+
+        <h2>Part 2.5: Training the UNet</h2>
+
+        <p style="text-align: left;">
+            In this part, I followed Algorithm 3 below to train the class-conditioned UNet over 10 epochs.
+            This is essentially the same training process as Algorithm 1 for the time-conditioned UNet, but it also conditions the model on the one-hot encoded digit class vector, with the dropout condition discussed in the previous part.
+            I used the same hyperparameters as part 2.2 (a batch size of 64, a hidden dimension of 64, the Adam optimizer with an initial learning rate of 1e-2, and an exponential learning rate delay scheduler with gamma 0.1**(1.0/num_epochs)).
+            Below is the training loss curve over this process.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.51.png" style="height: 400px; width: auto;">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.52.png" style="height: 400px; width: auto;">
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>Part 2.6: Sampling from the UNet</h2>
+
+        <p style="text-align: left;">
+            In this part, I follow Algorithm 4 below to sample from the class-conditioned UNet.
+            The algorithm follows a similar sampling process to Algorithm 2 for the time-conditioned UNet, but it additionally uses classifier-free guidance by utilizing the conditional and unconditional generations. 
+            Below are the results for epochs 1, 5, and 10.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.61.png" style="height: 400px; width: auto;">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.62.png" style="height: 400px; width: auto;">
+                <div class="caption">Epoch 1</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.63.png" style="height: 400px; width: auto;">
+                <div class="caption">Epoch 5</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.64.png" style="height: 400px; width: auto;">
+                <div class="caption">Epoch 10</div>
+            </div>
+        </div>
+
+        <p style="text-align: left;">
+            To get rid of the learning rate scheduler while maintaining the same performance, I reduced the overall learning rate to be lower than the initial learning rate of 1e-2, since the learning rate scheduler slowly decreases the learning rate across epochs.
+            Specifically, I reduced the learning rate to 1e-3, which is between the initial and final learning rates from the scheduler.
+            Below is the training loss curve over this process without the scheduler, as well as the results for epochs 1, 5, and 10.
+        </p>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.68.png" style="height: 400px; width: auto;">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.65.png" style="height: 400px; width: auto;">
+                <div class="caption">Epoch 1</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.66.png" style="height: 400px; width: auto;">
+                <div class="caption">Epoch 5</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stack-image-container">
+                <img src="./media/partb2.67.png" style="height: 400px; width: auto;">
+                <div class="caption">Epoch 10</div>
+            </div>
+        </div>
+
 
     </div>
 
     <h2 style="margin-bottom: 50px; margin-top: 50px">Conclusion</h2>
     <div class="info">
         <p style="text-align: left;">
-            The most important thing I learned from this project was how intricate the process of image blending and image editing truly is.
-            Overall, the process seems so much simpler when utilizing user interfaces to automatically generate these images for you, but the mathematical equations behind these edits are so complex.
-            This project has made me appreciate these tools and libraries that efficiently optimize this process so much more, and I am now eager to understand the inner workings of additional imaging techniques. 
+            The most important thing I learned from this project was the importance of conditioning when designing generate models.
+            In particular, as shown in part B, adding the time and class conditioning significantly improved the quality of the samples the model generated.
+            Overall, it was nice to be able to see the inner workings of diffusion models, specifically how denoising, conditioning, and hyperparameters play a role in producing good results.
         </p>
     </div>
--->
+
 </body>
 </html>
